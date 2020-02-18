@@ -19,6 +19,8 @@ public class Server {
     static Map<String, ECPoint> publicKeysUsers = new ConcurrentHashMap<>();
     private static BigInteger PRIVATE_KEY;
     private static ECPoint PUBLIC_KEY;
+    private static String IP = null;
+    public boolean isStarted = false;
 
     static {
         try {
@@ -29,6 +31,10 @@ public class Server {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    public String getServerIP(){
+        return IP;
     }
 
     static boolean getPublicKeyConnectedUser(Connection connection) throws IOException, ClassNotFoundException, CloneNotSupportedException {
@@ -49,18 +55,22 @@ public class Server {
         }
     }
 
-    public static void main(String[] args) {
+    public void start() throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server is running..." + "\nIP: " + InetAddress.getLocalHost().getHostAddress());
+            IP = InetAddress.getLocalHost().getHostAddress();
+            System.out.println("IP:" + IP);
+            isStarted = true;
             Commands commands = new Commands();
             commands.setDaemon(true);
             commands.start();
-            while (true) {
+            while (isStarted) {
                 Socket socket = serverSocket.accept();
                 new ClientHandler(socket).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
+            IP = "Error...";
+            throw new IOException("Error...");
         }
     }
 
