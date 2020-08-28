@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +21,12 @@ public class Server {
     private static BigInteger PRIVATE_KEY;
     private static ECPoint PUBLIC_KEY;
     private static String IP = null;
-    public boolean isStarted = false;
+    private boolean isStarted = false;
+
+    public static void main(String[] args) throws IOException {
+        Server server = new Server();
+        server.start();
+    }
 
     static {
         try {
@@ -33,8 +39,12 @@ public class Server {
         }
     }
 
-    public String getServerIP(){
+    public String getServerIP() {
         return IP;
+    }
+
+    public boolean isStarted() {
+        return isStarted;
     }
 
     static boolean getPublicKeyConnectedUser(Connection connection) throws IOException, ClassNotFoundException, CloneNotSupportedException {
@@ -49,6 +59,7 @@ public class Server {
                     BigInteger commonKeyConnectedUser = ECC.ECC.getCommonKey(publicKeyConnectedUser, PRIVATE_KEY);
                     commonKeys.put(userName, commonKeyConnectedUser);
                     connection.sendMessage(new Message(MessageType.PUBLIC_KEY_SERVER, PUBLIC_KEY));
+                    connection.sendMessage(new Message(MessageType.USERS_LIST, new ArrayList<>(users.keySet())));
                     return true;
                 }
             }
@@ -60,9 +71,9 @@ public class Server {
             IP = InetAddress.getLocalHost().getHostAddress();
             System.out.println("IP:" + IP);
             isStarted = true;
-            Commands commands = new Commands();
-            commands.setDaemon(true);
-            commands.start();
+//            Commands commands = new Commands();
+//            commands.setDaemon(true);
+//            commands.start();
             while (isStarted) {
                 Socket socket = serverSocket.accept();
                 new ClientHandler(socket).start();

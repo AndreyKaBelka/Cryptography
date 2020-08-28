@@ -8,6 +8,7 @@ import MD5.MD5;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Message implements Serializable, Cloneable {
     private MessageType msgType;
@@ -34,6 +35,16 @@ public class Message implements Serializable, Cloneable {
         this.msgType = msgType;
         this.public_key = publicKey;
         this.username = username;
+    }
+
+    public Message(MessageType msgType, ArrayList<String> usersName) {
+        this.msgType = msgType;
+        StringBuilder temp = new StringBuilder();
+        for (String username : usersName) {
+            temp.append(username).append(":");
+        }
+
+        this.text = temp.toString();
     }
 
     public void encrypt(BigInteger commonKey, BigInteger yourPrivateKey) {

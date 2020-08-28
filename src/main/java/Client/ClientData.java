@@ -4,9 +4,8 @@ import ECC.ECPoint;
 import KeyPair.KEYPair;
 
 import java.math.BigInteger;
-import java.util.Scanner;
 
-class ClientData {
+public class ClientData {
     private static BigInteger PRIVATE_KEY;
     private static ECPoint PUBLIC_KEY;
     private static String USERNAME = null;
@@ -26,12 +25,12 @@ class ClientData {
         PUBLIC_KEY = keyPair.getPublic_key();
     }
 
-    static String getUSERNAME() {
-        if (USERNAME == null) {
-            Scanner in = new Scanner(System.in);
-            USERNAME = in.nextLine();
-        }
+    public static String getUSERNAME() {
         return USERNAME;
+    }
+
+    public static void setUSERNAME(String USERNAME) {
+        ClientData.USERNAME = USERNAME;
     }
 
     static BigInteger getPrivateKey() {

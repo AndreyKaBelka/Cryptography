@@ -8,5 +8,6 @@ public enum MessageType {
     NAME_REQUEST,
     PUBLIC_KEY_USER,
     PUBLIC_KEY_SERVER,
-    NAME_NOT_ACCEPTED
+    NAME_NOT_ACCEPTED,
+    USERS_LIST
 }
