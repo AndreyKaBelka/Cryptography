@@ -114,12 +114,12 @@ public class Client {
 
         void informAboutAddingNewUser(Message userName) {
             userName.decrypt(ClientData.getCommonKey(), ClientData.getPublicKeyServer());
-            System.out.println("User " + userName.getText() + " is connected to the chat.");
+            MainController.addNewUser(userName.getText());
         }
 
         void informAboutDeletingNewUser(Message userName) {
             userName.decrypt(ClientData.getCommonKey(), ClientData.getPublicKeyServer());
-            System.out.println("User " + userName.getText() + " left the chat.");
+            MainController.removeUser(userName.getText());
         }
 
         private void setUsersList(Message usersList) {

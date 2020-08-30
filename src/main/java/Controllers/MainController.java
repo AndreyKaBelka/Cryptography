@@ -12,7 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
@@ -64,6 +64,7 @@ public class MainController {
 
     private Client client = null;
     private static Queue<String> newMessages = new LinkedList<>();
+    private static ArrayList<String> users = new ArrayList<>();
 
     private void showError(String text) throws ExecutionException, InterruptedException {
         final Runnable showDialog = () -> {
@@ -84,7 +85,7 @@ public class MainController {
         newMessages.add(message);
     }
 
-    public void addToTheChatMessage() {
+    private void addToTheChatMessage() {
         Thread addNewMsg = new Thread(() -> {
             while (true) {
                 if (newMessages.size() > 0) {
@@ -116,6 +117,36 @@ public class MainController {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void addNewUser(String newUser) {
+        users.add(newUser);
+    }
+
+    public static void removeUser(String removableUser) {
+        users.remove(removableUser);
+    }
+
+    private void changeTheUserRoom() {
+        Thread changes = new Thread(() -> {
+            int prevSize = users.size();
+            while (true){
+                if (prevSize != users.size()){
+                    usersRoom.setText("");
+                    for (String user: users){
+                        usersRoom.setText(usersRoom.getText() + "\n" + user);
+                    }
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        changes.setDaemon(true);
+        changes.start();
     }
 
     @FXML
@@ -262,5 +293,6 @@ public class MainController {
         }).start();
 
         addToTheChatMessage();
+        changeTheUserRoom();
     }
 }

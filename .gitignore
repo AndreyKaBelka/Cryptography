@@ -2,3 +2,5 @@
 /pom.xml
 /.idea/
 /target/
+/target/classes/
+/target/generated-sources/
