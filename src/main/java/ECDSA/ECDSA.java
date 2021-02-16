@@ -2,20 +2,20 @@ package ECDSA;
 
 import ECC.ECPoint;
 import ECC.Inputs;
-import KeyPair.KEYPair;
+import KeyPair.KeyPair;
 
 import java.math.BigInteger;
 
 public class ECDSA {
     public static ECPoint getSignature(String hash, BigInteger your_private_key) throws CloneNotSupportedException {
         BigInteger r;
-        KEYPair keyPair;
+        KeyPair keyPair;
         BigInteger s;
         BigInteger _hash = new BigInteger(hash, 16);
 
         do {
             do {
-                keyPair = KEYPair.generateKeyPair();
+                keyPair = KeyPair.generateKeyPair();
                 r = keyPair.getPublic_key().x.mod(Inputs.N.value());
             } while (r.compareTo(BigInteger.ZERO) == 0);
 

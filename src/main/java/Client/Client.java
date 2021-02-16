@@ -5,10 +5,11 @@ import ECC.ECPoint;
 import Server.Connection;
 import Server.Message;
 import Server.MessageType;
-import javafx.application.Platform;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,7 +124,10 @@ public class Client {
         }
 
         private void setUsersList(Message usersList) {
-            System.out.println(usersList.getText());
+            String[] temp = usersList.getText().split(":");
+            ArrayList<String> users = new ArrayList<>();
+            Collections.addAll(users, temp);
+            MainController.setUsers(users);
         }
 
         @Override

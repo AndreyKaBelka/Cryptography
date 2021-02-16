@@ -1,7 +1,7 @@
 package Server;
 
 import ECC.ECPoint;
-import KeyPair.KEYPair;
+import KeyPair.KeyPair;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -30,7 +30,7 @@ public class Server {
 
     static {
         try {
-            KEYPair keyPair = KEYPair.generateKeyPair();
+            KeyPair keyPair = KeyPair.generateKeyPair();
             PRIVATE_KEY = keyPair.getPrivate_key();
             PUBLIC_KEY = keyPair.getPublic_key();
         } catch (CloneNotSupportedException e) {

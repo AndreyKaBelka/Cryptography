@@ -6,11 +6,11 @@ import ECC.Inputs;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class KEYPair {
+public class KeyPair {
     private ECPoint public_key;
     private BigInteger private_key;
 
-    private KEYPair() {
+    private KeyPair() {
         this.public_key = null;
         this.private_key = BigInteger.ZERO;
     }
@@ -23,8 +23,8 @@ public class KEYPair {
         return public_key;
     }
 
-    public static KEYPair generateKeyPair() throws CloneNotSupportedException {
-        KEYPair keyPair = new KEYPair();
+    public static KeyPair generateKeyPair() throws CloneNotSupportedException {
+        KeyPair keyPair = new KeyPair();
         keyPair.private_key = genPrivateKey();
         keyPair.public_key = genPublicKey(keyPair.private_key);
         return keyPair;
@@ -36,7 +36,7 @@ public class KEYPair {
         return ECPoint.multiply(g, d);
     }
 
-    private static BigInteger genPrivateKey(){
+    private static BigInteger genPrivateKey() {
         BigInteger key;
         SecureRandom rnd = new SecureRandom();
         do {

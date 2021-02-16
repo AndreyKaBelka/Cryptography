@@ -1,7 +1,7 @@
 package Client;
 
 import ECC.ECPoint;
-import KeyPair.KEYPair;
+import KeyPair.KeyPair;
 
 import java.math.BigInteger;
 
@@ -13,9 +13,9 @@ public class ClientData {
     private static ECPoint PUBLIC_KEY_SERVER;
 
     static {
-        KEYPair keyPair = null;
+        KeyPair keyPair = null;
         try {
-            keyPair = KEYPair.generateKeyPair();
+            keyPair = KeyPair.generateKeyPair();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

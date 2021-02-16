@@ -1,6 +1,4 @@
 /messenger.iml
-/pom.xml
 /.idea/
 /target/
-/target/classes/
-/target/generated-sources/
+/out/

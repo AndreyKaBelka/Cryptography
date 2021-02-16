@@ -127,13 +127,17 @@ public class MainController {
         users.remove(removableUser);
     }
 
+    public static void setUsers(ArrayList<String> arrayList) {
+        users = arrayList;
+    }
+
     private void changeTheUserRoom() {
         Thread changes = new Thread(() -> {
             int prevSize = users.size();
-            while (true){
-                if (prevSize != users.size()){
+            while (true) {
+                if (prevSize != users.size()) {
                     usersRoom.setText("");
-                    for (String user: users){
+                    for (String user : users) {
                         usersRoom.setText(usersRoom.getText() + "\n" + user);
                     }
                 }
