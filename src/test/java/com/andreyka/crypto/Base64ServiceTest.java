@@ -1,6 +1,5 @@
 package com.andreyka.crypto;
 
-import com.andreyka.crypto.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 

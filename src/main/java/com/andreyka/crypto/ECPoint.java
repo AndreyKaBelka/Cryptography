@@ -2,6 +2,9 @@ package com.andreyka.crypto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ECPoint implements Cloneable, Serializable {
     private BigInteger x;
@@ -40,6 +43,20 @@ public class ECPoint implements Cloneable, Serializable {
         this.p = ecPoint.p;
         this.x = BigInteger.ZERO;
         this.y = BigInteger.ZERO;
+    }
+
+    /**
+     * @param value string like "{x_coord;r_coord}"
+     * @return ECPoint parsed value
+     */
+    public static ECPoint parseValue(String value) {
+        Pattern pattern = Pattern.compile("\\{(\\d+?);(\\d+?)\\}");
+        Matcher matcher = pattern.matcher(value);
+        if (matcher.find()) {
+            BigInteger x = new BigInteger(matcher.group(1));
+            BigInteger r = new BigInteger(matcher.group(2));
+            return new ECPoint(x, r);
+        } else throw new ECPointParseException(String.format("Can`t parse this string! %s", value));
     }
 
     /**
@@ -167,5 +184,18 @@ public class ECPoint implements Cloneable, Serializable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ECPoint ecPoint = (ECPoint) o;
+        return x.equals(ecPoint.x) && y.equals(ecPoint.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }
