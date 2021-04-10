@@ -1,23 +1,18 @@
-package com.andreyka.crypto.service;
-
-import org.springframework.stereotype.Service;
+package com.andreyka.crypto;
 
 import java.util.ArrayList;
 
-@Service
-public class Base64ServiceImpl implements Base64Service {
-    private final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+class Base64 {
+    private static final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    @Override
-    public String encode(String text) {
+    static String encode(String text) {
         if (text.isBlank()) {
             return "";
         }
         return encode(text.getBytes());
     }
 
-    @Override
-    public String encode(byte[] bytes) {
+    static String encode(byte[] bytes) {
         StringBuilder rez = new StringBuilder();
         int cnt_zer_bytes = 3 - bytes.length % 3;
         byte[] copy;
@@ -54,15 +49,14 @@ public class Base64ServiceImpl implements Base64Service {
         return rez.toString();
     }
 
-    @Override
-    public byte[] decode(String text) {
+    static byte[] decode(String text) {
         if (text.isBlank()) {
             return "".getBytes();
         }
         return decode(text.getBytes());
     }
 
-    private byte[] decode(byte[] bytes1) {
+    private static byte[] decode(byte[] bytes1) {
         ArrayList<Byte> bytes_out = new ArrayList<>();
 
         byte[] bytes = new byte[bytes1.length];
@@ -94,7 +88,7 @@ public class Base64ServiceImpl implements Base64Service {
         return listToArr(bytes_out);
     }
 
-    private byte[] listToArr(ArrayList<Byte> arr) {
+    private static byte[] listToArr(ArrayList<Byte> arr) {
         byte[] out = new byte[arr.size()];
 
         for (int i = 0; i < arr.size(); i++) {

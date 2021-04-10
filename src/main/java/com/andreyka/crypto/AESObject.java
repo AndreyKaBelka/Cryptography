@@ -1,9 +1,4 @@
-package com.andreyka.crypto.service;
-
-import com.andreyka.crypto.data.AESConsts;
-import com.andreyka.crypto.data.Word;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package com.andreyka.crypto;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -12,18 +7,11 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-@Service
-public class AESServiceImpl implements AESService {
-    private final WordService wordService;
+class AESObject {
+    private final Word[] words;
 
-    @Autowired
-    public AESServiceImpl(WordService wordService) {
-        this.wordService = wordService;
-    }
-
-    @Override
-    public Word[] setWordsByKey(BigInteger key) {
-        return keyExpansion(key);
+    AESObject(BigInteger key) {
+        this.words = keyExpansion(key);
     }
 
     private int[] getArrayOfInt(byte[] bytes) {
@@ -62,14 +50,11 @@ public class AESServiceImpl implements AESService {
         return sub_arr;
     }
 
-    @Override
-    public byte[] encrypt(String text, BigInteger commonKey) {
-        return intToByteArray(encrypt(getArrayOfInt(text.getBytes()), commonKey));
+    byte[] encrypt(String text) {
+        return intToByteArray(encrypt(getArrayOfInt(text.getBytes())));
     }
 
-    private int[] encrypt(int[] bytes_in, BigInteger commonKey) {
-        Word[] words = setWordsByKey(commonKey);
-
+    private int[] encrypt(int[] bytes_in) {
         ArrayList<Integer> bytes = new ArrayList<>();
         bytes.add(bytes_in.length);
 
@@ -90,18 +75,18 @@ public class AESServiceImpl implements AESService {
             int[] sub_arr = getSubArr(cnt << 4, (cnt + 1) << 4, bytes);
             int[][] state = getState(sub_arr);
 
-            addRoundKey(state, 0, words);
+            addRoundKey(state, 0);
 
             for (int round = 1; round < AESConsts.Nr; round++) {
                 subBytes(state);
                 shiftRows(state);
                 mixColumns(state);
-                addRoundKey(state, round, words);
+                addRoundKey(state, round);
             }
 
             subBytes(state);
             shiftRows(state);
-            addRoundKey(state, AESConsts.Nr, words);
+            addRoundKey(state, AESConsts.Nr);
 
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < AESConsts.Nb; j++) {
@@ -113,31 +98,29 @@ public class AESServiceImpl implements AESService {
         return bytes_out;
     }
 
-    @Override
-    public byte[] decrypt(byte[] text, BigInteger commonKey) {
-        return intToByteArray(decrypt(getArrayOfInt(text), commonKey));
+    byte[] decrypt(byte[] text) {
+        return intToByteArray(decrypt(getArrayOfInt(text)));
     }
 
-    private int[] decrypt(int[] bytes_in, BigInteger commonKey) {
+    private int[] decrypt(int[] bytes_in) {
         ArrayList<Integer> bytes = (ArrayList<Integer>) Arrays.stream(bytes_in).boxed().collect(Collectors.toList());
         int[] bytes_out = new int[4 * AESConsts.Nb * (bytes.size() >> 4)];
 
-        Word[] words = setWordsByKey(commonKey);
         for (int cnt = 0; cnt < bytes.size() >> 4; cnt++) {
             int[] sub_arr = getSubArr(cnt << 4, (cnt + 1) << 4, bytes);
             int[][] state = getState(sub_arr);
 
-            addRoundKey(state, AESConsts.Nr, words);
+            addRoundKey(state, AESConsts.Nr);
 
             for (int round = AESConsts.Nr - 1; round >= 1; round--) {
                 invShiftRows(state);
                 invSubBytes(state);
-                addRoundKey(state, round, words);
+                addRoundKey(state, round);
                 invMixColumns(state);
             }
             invShiftRows(state);
             invSubBytes(state);
-            addRoundKey(state, 0, words);
+            addRoundKey(state, 0);
 
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < AESConsts.Nb; j++) {
@@ -210,10 +193,10 @@ public class AESServiceImpl implements AESService {
             words[i] = new Word(key[4 * i], key[4 * i + 1], key[4 * i + 2], key[4 * i + 3]);
         }
         for (int i = 4; i < words.length; i++) {
-            if (i % 4 != 0) words[i] = this.wordService.sum(words[i - 1], words[i - 4]);
+            if (i % 4 != 0) words[i] = Word.sum(words[i - 1], words[i - 4]);
             else {
-                t = this.wordService.sum(this.wordService.subWord(this.wordService.rotWord(words[i - 1])), AESConsts.rcon[i / 4]);
-                words[i] = this.wordService.sum(t, words[i - 4]);
+                t = Word.sum(Word.subWord(Word.rotWord(words[i - 1])), AESConsts.rcon[i / 4]);
+                words[i] = Word.sum(t, words[i - 4]);
             }
         }
         return words;
@@ -263,7 +246,7 @@ public class AESServiceImpl implements AESService {
         }
     }
 
-    private void addRoundKey(int[][] bytes, int r, Word[] words) {
+    private void addRoundKey(int[][] bytes, int r) {
         for (int i = 0; i < AESConsts.Nb; i++) {
             for (int j = 0; j < 4; j++) {
                 bytes[i][j] = sum(bytes[i][j], words[AESConsts.Nb * r + j].getIndex(i));

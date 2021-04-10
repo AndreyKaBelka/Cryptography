@@ -1,12 +1,47 @@
-package com.andreyka.crypto.service;
+package com.andreyka.crypto;
 
-import com.andreyka.crypto.data.ECPoint;
-import org.springframework.stereotype.Service;
-
+import java.io.Serializable;
 import java.math.BigInteger;
 
-@Service
-public class ECPointMathServiceImpl implements ECPointMathService {
+class ECPoint implements Cloneable, Serializable {
+    private BigInteger x;
+    private BigInteger y;
+    private final BigInteger a;
+    private final BigInteger b;
+    private final BigInteger p;
+
+    ECPoint() {
+        this.x = BigInteger.ZERO;
+        this.y = BigInteger.ZERO;
+        this.a = BigInteger.ZERO;
+        this.b = BigInteger.ZERO;
+        this.p = BigInteger.ZERO;
+    }
+
+    ECPoint(BigInteger r, BigInteger s) {
+        x = r;
+        y = s;
+        this.a = Inputs.A.value();
+        this.b = Inputs.B.value();
+        this.p = Inputs.P.value();
+    }
+
+    ECPoint(Inputs[] inputs) {
+        this.x = inputs[0].value();
+        this.y = inputs[1].value();
+        this.a = inputs[3].value();
+        this.b = inputs[4].value();
+        this.p = inputs[2].value();
+    }
+
+    ECPoint(ECPoint ecPoint) {
+        this.a = ecPoint.a;
+        this.b = ecPoint.b;
+        this.p = ecPoint.p;
+        this.x = BigInteger.ZERO;
+        this.y = BigInteger.ZERO;
+    }
+
     /**
      * Function performs addiction two elliptic curve points
      *
@@ -14,8 +49,8 @@ public class ECPointMathServiceImpl implements ECPointMathService {
      * @param point2 Second elliptic point
      * @return summary of two points
      */
-    @Override
-    public ECPoint add(ECPoint point1, ECPoint point2) {
+
+    static ECPoint add(ECPoint point1, ECPoint point2) {
         ECPoint point3 = new ECPoint(point1);
 
         BigInteger numerator = point1.getY().subtract(point2.getY()).mod(point3.getP());//y1-y2
@@ -35,7 +70,7 @@ public class ECPointMathServiceImpl implements ECPointMathService {
      * @param point Point that need to be doubled
      * @return 2*point
      */
-    private ECPoint Double(ECPoint point) {
+    private static ECPoint Double(ECPoint point) {
         ECPoint ecPoint = new ECPoint(point);
 
         BigInteger numerator = point.getX().pow(2).multiply(BigInteger.valueOf(3)).add(point.getA());//3x^2+a
@@ -61,7 +96,7 @@ public class ECPointMathServiceImpl implements ECPointMathService {
      * @param p   prime number
      * @return mod of 1/det
      */
-    private BigInteger getModDet(BigInteger det, BigInteger p) {
+    private static BigInteger getModDet(BigInteger det, BigInteger p) {
         if (det.compareTo(BigInteger.ONE) == 0) {
             return BigInteger.ONE;
         }
@@ -73,8 +108,8 @@ public class ECPointMathServiceImpl implements ECPointMathService {
      * @param num   the multiplier number
      * @return scalar multiply of point and number
      */
-    @Override
-    public ECPoint multiply(ECPoint point, BigInteger num) throws CloneNotSupportedException {
+
+    static ECPoint multiply(ECPoint point, BigInteger num) throws CloneNotSupportedException {
         ECPoint ecPoint = point;
         ECPoint temp = (ECPoint) point.clone();
         BigInteger cnt = num.subtract(BigInteger.ONE);
@@ -94,5 +129,43 @@ public class ECPointMathServiceImpl implements ECPointMathService {
             cnt = cnt.divide(BigInteger.TWO);
         }
         return ecPoint;
+    }
+
+    BigInteger getX() {
+        return x;
+    }
+
+    void setX(BigInteger x) {
+        this.x = x;
+    }
+
+    BigInteger getY() {
+        return y;
+    }
+
+    void setY(BigInteger y) {
+        this.y = y;
+    }
+
+    BigInteger getA() {
+        return a;
+    }
+
+    BigInteger getB() {
+        return b;
+    }
+
+    BigInteger getP() {
+        return p;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + this.x + ";" + this.y + "}";
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
