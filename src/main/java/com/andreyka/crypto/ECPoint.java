@@ -3,14 +3,14 @@ package com.andreyka.crypto;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-class ECPoint implements Cloneable, Serializable {
+public class ECPoint implements Cloneable, Serializable {
     private BigInteger x;
     private BigInteger y;
     private final BigInteger a;
     private final BigInteger b;
     private final BigInteger p;
 
-    ECPoint() {
+    public ECPoint() {
         this.x = BigInteger.ZERO;
         this.y = BigInteger.ZERO;
         this.a = BigInteger.ZERO;
@@ -18,7 +18,7 @@ class ECPoint implements Cloneable, Serializable {
         this.p = BigInteger.ZERO;
     }
 
-    ECPoint(BigInteger r, BigInteger s) {
+    public ECPoint(BigInteger r, BigInteger s) {
         x = r;
         y = s;
         this.a = Inputs.A.value();
@@ -26,7 +26,7 @@ class ECPoint implements Cloneable, Serializable {
         this.p = Inputs.P.value();
     }
 
-    ECPoint(Inputs[] inputs) {
+    public ECPoint(Inputs[] inputs) {
         this.x = inputs[0].value();
         this.y = inputs[1].value();
         this.a = inputs[3].value();
@@ -34,7 +34,7 @@ class ECPoint implements Cloneable, Serializable {
         this.p = inputs[2].value();
     }
 
-    ECPoint(ECPoint ecPoint) {
+    public ECPoint(ECPoint ecPoint) {
         this.a = ecPoint.a;
         this.b = ecPoint.b;
         this.p = ecPoint.p;
@@ -131,7 +131,7 @@ class ECPoint implements Cloneable, Serializable {
         return ecPoint;
     }
 
-    BigInteger getX() {
+    public BigInteger getX() {
         return x;
     }
 
@@ -139,7 +139,7 @@ class ECPoint implements Cloneable, Serializable {
         this.x = x;
     }
 
-    BigInteger getY() {
+    public BigInteger getY() {
         return y;
     }
 
