@@ -42,10 +42,15 @@
 
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub AndreyKaBelka Library for Messenger</name>
-            <url>https://maven.pkg.github.com/AndreyKaBelka/Cryptography</url>
+            <id>central-jfrog</id>
+            <name>crypto</name>
+            <url>https://andreyka.jfrog.io/artifactory/default-maven-local</url>
         </repository>
+        <snapshotRepository>
+            <id>central-jfrog</id>
+            <name>crypto</name>
+            <url>https://andreyka.jfrog.io/artifactory/default-maven-local</url>
+        </snapshotRepository>
     </distributionManagement>
 
 </project>
