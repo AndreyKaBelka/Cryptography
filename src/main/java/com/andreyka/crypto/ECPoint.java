@@ -15,14 +15,6 @@ public class ECPoint implements Cloneable, Serializable {
     private BigInteger x;
     private BigInteger y;
 
-    public ECPoint() {
-        this.x = BigInteger.ZERO;
-        this.y = BigInteger.ZERO;
-        this.a = BigInteger.ZERO;
-        this.b = BigInteger.ZERO;
-        this.p = BigInteger.ZERO;
-    }
-
     public ECPoint(BigInteger r, BigInteger s) {
         x = r;
         y = s;
@@ -68,17 +60,16 @@ public class ECPoint implements Cloneable, Serializable {
      * @param point2 Second elliptic point
      * @return summary of two points
      */
-
     static ECPoint add(ECPoint point1, ECPoint point2) {
         ECPoint point3 = new ECPoint(point1);
 
-        BigInteger numerator = point1.getY().subtract(point2.getY()).mod(point3.getP());//y1-y2
-        BigInteger determinate = point1.getX().subtract(point2.getX()).mod(point3.getP());//x1-x2
-        determinate = getModDet(determinate, point3.getP());
+        BigInteger numerator = point1.getY().subtract(point2.getY()).mod(point3.p);//y1-y2
+        BigInteger determinate = point1.getX().subtract(point2.getX()).mod(point3.p);//x1-x2
+        determinate = getModDet(determinate, point3.p);
 
-        BigInteger s = numerator.multiply(determinate).mod(point3.getP());//(y1-y2)/(x1-x2)
-        point3.setX(s.pow(2).subtract(point1.getX()).subtract(point2.getX()).mod(point3.getP()));//s^2-x1-x2
-        point3.setY(point1.getX().subtract(point3.getX()).multiply(s).subtract(point1.getY()).mod(point3.getP()));//s(x1-x3)-y1
+        BigInteger s = numerator.multiply(determinate).mod(point3.p);//(y1-y2)/(x1-x2)
+        point3.x = s.pow(2).subtract(point1.getX()).subtract(point2.getX()).mod(point3.p);//s^2-x1-x2
+        point3.y = point1.getX().subtract(point3.getX()).multiply(s).subtract(point1.getY()).mod(point3.p);//s(x1-x3)-y1
 
         return point3;
     }
@@ -92,15 +83,15 @@ public class ECPoint implements Cloneable, Serializable {
     private static ECPoint Double(ECPoint point) {
         ECPoint ecPoint = new ECPoint(point);
 
-        BigInteger numerator = point.getX().pow(2).multiply(BigInteger.valueOf(3)).add(point.getA());//3x^2+a
-        numerator = numerator.mod(ecPoint.getP());
+        BigInteger numerator = point.x.pow(2).multiply(BigInteger.valueOf(3)).add(point.a);//3x^2+a
+        numerator = numerator.mod(ecPoint.p);
         BigInteger determinate = point.getY().multiply(BigInteger.valueOf(2));//2y
-        determinate = determinate.mod(ecPoint.getP());
-        determinate = getModDet(determinate, ecPoint.getP());
+        determinate = determinate.mod(ecPoint.p);
+        determinate = getModDet(determinate, ecPoint.p);
 
-        BigInteger s = numerator.multiply(determinate).mod(ecPoint.getP());
-        ecPoint.setX(s.pow(2).subtract(point.getX()).subtract(point.getX()).mod(ecPoint.getP()));//s^2-x-x
-        ecPoint.setY(point.getX().subtract(ecPoint.getX()).multiply(s).subtract(point.getY()).mod(ecPoint.getP()));//s(x-x3)-y
+        BigInteger s = numerator.multiply(determinate).mod(ecPoint.p);
+        ecPoint.x = s.pow(2).subtract(point.getX()).subtract(point.getX()).mod(ecPoint.p);//s^2-x-x
+        ecPoint.y = point.getX().subtract(ecPoint.getX()).multiply(s).subtract(point.getY()).mod(ecPoint.p);//s(x-x3)-y
 
         return ecPoint;
     }
@@ -127,7 +118,6 @@ public class ECPoint implements Cloneable, Serializable {
      * @param num   the multiplier number
      * @return scalar multiply of point and number
      */
-
     static ECPoint multiply(ECPoint point, BigInteger num) throws CloneNotSupportedException {
         ECPoint ecPoint = point;
         ECPoint temp = (ECPoint) point.clone();
@@ -154,28 +144,8 @@ public class ECPoint implements Cloneable, Serializable {
         return x;
     }
 
-    void setX(BigInteger x) {
-        this.x = x;
-    }
-
     public BigInteger getY() {
         return y;
-    }
-
-    void setY(BigInteger y) {
-        this.y = y;
-    }
-
-    BigInteger getA() {
-        return a;
-    }
-
-    BigInteger getB() {
-        return b;
-    }
-
-    BigInteger getP() {
-        return p;
     }
 
     @Override
@@ -184,7 +154,7 @@ public class ECPoint implements Cloneable, Serializable {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 

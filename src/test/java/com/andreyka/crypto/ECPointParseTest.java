@@ -9,7 +9,7 @@ public class ECPointParseTest {
 
     @Test
     public void parseValue() throws CloneNotSupportedException {
-        KeyPair generatedPair = KeyPair.generateKeyPair();
+        KeyPair generatedPair = new KeyPair();
         ECPoint point = generatedPair.getPublicKey();
         ECPoint parsedPoint = ECPoint.parseValue(point.toString());
         assertEquals(point, parsedPoint);

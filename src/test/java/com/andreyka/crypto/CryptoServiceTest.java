@@ -14,14 +14,14 @@ public class CryptoServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        myUser = KeyPair.generateKeyPair();
-        otherUser = KeyPair.generateKeyPair();
+        myUser = new KeyPair();
+        otherUser = new KeyPair();
     }
 
     @Test
     public void cryptoTest() throws CloneNotSupportedException {
         BigInteger commonKey = ECCService.getCommonKey(otherUser.getPublicKey(), myUser.getPrivateKey());
-        CryptoService.Pair pair = CryptoService.encrypt(commonKey, myUser.getPrivateKey(), TEXT_TO_CRYPT);
+        Pair pair = CryptoService.encrypt(commonKey, myUser.getPrivateKey(), TEXT_TO_CRYPT);
 
         //Сюда кладем свой публичный ключ потому-что при получении сообщения
         //другим пользователем, для него НАШ публичный ключ - это публичный ключ Другого пользователя!!!!!!!

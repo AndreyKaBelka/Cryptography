@@ -5,14 +5,14 @@ import com.andreyka.crypto.exceptions.SignatureValidationException;
 
 import java.math.BigInteger;
 
-public class CryptoService {
+class CryptoService {
     /**
      * @param commonKey      common key of two users
      * @param yourPrivateKey your private key that you can get from KeyPair
      * @param text           text you want to encrypt
      * @return pair of encrypted text and it`s signature
      */
-    public static Pair encrypt(BigInteger commonKey, BigInteger yourPrivateKey, String text) throws CryptoOperationException {
+    static Pair encrypt(BigInteger commonKey, BigInteger yourPrivateKey, String text) throws CryptoOperationException {
         try {
             String base64EncodedMessage = Base64.encode(text);
             String hashedBase64EncodedMessage = SHA2.getHash(base64EncodedMessage);
@@ -21,9 +21,9 @@ public class CryptoService {
 
             AESObject aesObject = new AESObject(commonKey);
             byte[] bytes = aesObject.encrypt(base64EncodedMessage);
-            byte[] base64BytesEncoded = Base64.encode(bytes).getBytes();
+            String base64BytesEncoded = Base64.encode(bytes);
 
-            return new Pair(new String(base64BytesEncoded), signatureForHashed);
+            return new Pair(base64BytesEncoded, signatureForHashed);
         } catch (Exception e) {
             throw new CryptoOperationException("Error in text encrypting!", e);
         }
@@ -36,7 +36,7 @@ public class CryptoService {
      * @return decrypted string
      * @throws SignatureValidationException if signature isn`t valid for this message
      */
-    public static String decrypt(BigInteger commonKey, ECPoint otherPublicKey, Pair pair) throws CryptoOperationException, SignatureValidationException {
+    static String decrypt(BigInteger commonKey, ECPoint otherPublicKey, Pair pair) throws CryptoOperationException, SignatureValidationException {
         try {
             byte[] base64DecodedEncryptedMessage = Base64.decode(pair.text);
             AESObject aesObject = new AESObject(commonKey);
@@ -47,7 +47,7 @@ public class CryptoService {
             boolean isValidSignature = ECDSAService.isValid(hashedBase64DecodedMessage, otherPublicKey, pair.signature);
 
             if (isValidSignature) {
-                return new String(Base64.decode(new String(decodedByteArray)));
+                return new String(Base64.decode(decodedByteArray));
             } else {
                 throw new SignatureValidationException("Signature isn`t valid!");
             }
@@ -55,16 +55,6 @@ public class CryptoService {
             throw e;
         } catch (Exception e) {
             throw new CryptoOperationException("Something went wrong!", e);
-        }
-    }
-
-    public static class Pair {
-        private final String text;
-        private final ECPoint signature;
-
-        public Pair(String text, ECPoint signature) {
-            this.text = text;
-            this.signature = signature;
         }
     }
 }

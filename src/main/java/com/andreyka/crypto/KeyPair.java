@@ -4,35 +4,20 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 public class KeyPair {
-    private ECPoint publicKey;
-    private BigInteger privateKey;
+    private final ECPoint publicKey;
+    private final BigInteger privateKey;
 
-    public KeyPair() {
-        this.publicKey = null;
-        this.privateKey = BigInteger.ZERO;
-    }
-
-    public static KeyPair generateKeyPair() throws CloneNotSupportedException {
-        KeyPair keyPair = new KeyPair();
-        keyPair.setPrivateKey(keyPair.genPrivateKey());
-        keyPair.setPublicKey(keyPair.genPublicKey(keyPair.getPrivateKey()));
-        return keyPair;
+    public KeyPair() throws CloneNotSupportedException {
+        this.privateKey = genPrivateKey();
+        this.publicKey = genPublicKey(this.privateKey);
     }
 
     public BigInteger getPrivateKey() {
         return privateKey;
     }
 
-    void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = privateKey;
-    }
-
     public ECPoint getPublicKey() {
         return publicKey;
-    }
-
-    void setPublicKey(ECPoint publicKey) {
-        this.publicKey = publicKey;
     }
 
     private ECPoint genPublicKey(BigInteger d) throws CloneNotSupportedException {

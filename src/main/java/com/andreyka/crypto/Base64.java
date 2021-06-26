@@ -2,17 +2,17 @@ package com.andreyka.crypto;
 
 import java.util.ArrayList;
 
-class Base64 {
+public class Base64 {
     private static final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    static String encode(String text) {
+    public static String encode(String text) {
         if (text.isBlank()) {
             return "";
         }
         return encode(text.getBytes());
     }
 
-    static String encode(byte[] bytes) {
+    public static String encode(byte[] bytes) {
         StringBuilder rez = new StringBuilder();
         int cnt_zer_bytes = 3 - bytes.length % 3;
         byte[] copy;
@@ -49,25 +49,25 @@ class Base64 {
         return rez.toString();
     }
 
-    static byte[] decode(String text) {
+    public static byte[] decode(String text) {
         if (text.isBlank()) {
             return "".getBytes();
         }
         return decode(text.getBytes());
     }
 
-    private static byte[] decode(byte[] bytes1) {
+    public static byte[] decode(byte[] bytes) {
         ArrayList<Byte> bytes_out = new ArrayList<>();
 
-        byte[] bytes = new byte[bytes1.length];
+        byte[] bytes1 = new byte[bytes.length];
 
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) chars.indexOf(bytes1[i]);
+        for (int i = 0; i < bytes1.length; i++) {
+            bytes1[i] = (byte) chars.indexOf(bytes[i]);
         }
 
-        for (int i = 0; i < bytes.length; i += 4) {
+        for (int i = 0; i < bytes1.length; i += 4) {
             for (int j = 0; j < 3; j++) {
-                byte next_val = bytes[i + j + 1];
+                byte next_val = bytes1[i + j + 1];
                 if (next_val == -1) {
                     break;
                 }
@@ -78,7 +78,7 @@ class Base64 {
                 byte shifting_mask = (byte) (j << 1);
                 byte mask = (byte) (63 >> shifting_mask);
 
-                byte last_digit_val = (byte) (bytes[i + j] & mask);
+                byte last_digit_val = (byte) (bytes1[i + j] & mask);
 
                 byte ch = (byte) ((last_digit_val << (6 - cnt_bits)) | (lastBits));
                 bytes_out.add(ch);

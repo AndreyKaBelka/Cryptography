@@ -2,9 +2,9 @@ package com.andreyka.crypto;
 
 import java.math.BigInteger;
 
-class ECDSAService {
+public class ECDSAService {
 
-    static ECPoint getSignature(String hash, BigInteger yourPrivateKey) throws CloneNotSupportedException {
+    public static ECPoint getSignature(String hash, BigInteger yourPrivateKey) throws CloneNotSupportedException {
         BigInteger r;
         KeyPair keyPair;
         BigInteger s;
@@ -12,7 +12,7 @@ class ECDSAService {
 
         do {
             do {
-                keyPair = KeyPair.generateKeyPair();
+                keyPair = new KeyPair();
                 r = keyPair.getPublicKey().getX().mod(Inputs.N.value());
             } while (r.compareTo(BigInteger.ZERO) == 0);
 
@@ -28,7 +28,7 @@ class ECDSAService {
         return new ECPoint(r, s);
     }
 
-    static boolean isValid(String hash, ECPoint otherPublicKey, ECPoint signature) throws CloneNotSupportedException {
+    public static boolean isValid(String hash, ECPoint otherPublicKey, ECPoint signature) throws CloneNotSupportedException {
         BigInteger inv_s = signature.getY().modInverse(Inputs.N.value());
         BigInteger _hash = new BigInteger(hash, 16);
 

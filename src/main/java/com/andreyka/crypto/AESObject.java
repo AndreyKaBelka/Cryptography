@@ -7,11 +7,19 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-class AESObject {
+public class AESObject {
     private final Word[] words;
 
-    AESObject(BigInteger key) {
+    public AESObject(BigInteger key) {
         this.words = keyExpansion(key);
+    }
+
+    public byte[] encrypt(String text) {
+        return intToByteArray(encrypt(getArrayOfInt(text.getBytes())));
+    }
+
+    public byte[] decrypt(byte[] text) {
+        return intToByteArray(decrypt(getArrayOfInt(text)));
     }
 
     private int[] getArrayOfInt(byte[] bytes) {
@@ -48,10 +56,6 @@ class AESObject {
             inc.getAndIncrement();
         });
         return sub_arr;
-    }
-
-    byte[] encrypt(String text) {
-        return intToByteArray(encrypt(getArrayOfInt(text.getBytes())));
     }
 
     private int[] encrypt(int[] bytes_in) {
@@ -96,10 +100,6 @@ class AESObject {
         }
 
         return bytes_out;
-    }
-
-    byte[] decrypt(byte[] text) {
-        return intToByteArray(decrypt(getArrayOfInt(text)));
     }
 
     private int[] decrypt(int[] bytes_in) {
