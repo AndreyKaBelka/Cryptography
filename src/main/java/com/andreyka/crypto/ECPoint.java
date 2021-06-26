@@ -1,5 +1,7 @@
 package com.andreyka.crypto;
 
+import com.andreyka.crypto.exceptions.ECPointParseException;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -7,11 +9,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ECPoint implements Cloneable, Serializable {
-    private BigInteger x;
-    private BigInteger y;
     private final BigInteger a;
     private final BigInteger b;
     private final BigInteger p;
+    private BigInteger x;
+    private BigInteger y;
 
     public ECPoint() {
         this.x = BigInteger.ZERO;

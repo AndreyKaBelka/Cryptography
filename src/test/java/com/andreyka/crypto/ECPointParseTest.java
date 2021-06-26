@@ -1,8 +1,9 @@
 package com.andreyka.crypto;
 
+import com.andreyka.crypto.exceptions.ECPointParseException;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ECPointParseTest {
 

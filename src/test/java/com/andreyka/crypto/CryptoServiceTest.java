@@ -8,9 +8,9 @@ import org.junit.Test;
 import java.math.BigInteger;
 
 public class CryptoServiceTest {
+    private static final String TEXT_TO_CRYPT = "abcАБВ123+1234-/";
     private KeyPair myUser;
     private KeyPair otherUser;
-    private static final String TEXT_TO_CRYPT = "abcАБВ123+1234-/";
 
     @Before
     public void setUp() throws Exception {

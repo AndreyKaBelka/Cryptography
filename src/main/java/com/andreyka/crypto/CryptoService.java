@@ -1,5 +1,8 @@
 package com.andreyka.crypto;
 
+import com.andreyka.crypto.exceptions.CryptoOperationException;
+import com.andreyka.crypto.exceptions.SignatureValidationException;
+
 import java.math.BigInteger;
 
 public class CryptoService {
@@ -12,7 +15,7 @@ public class CryptoService {
     public static Pair encrypt(BigInteger commonKey, BigInteger yourPrivateKey, String text) throws CryptoOperationException {
         try {
             String base64EncodedMessage = Base64.encode(text);
-            String hashedBase64EncodedMessage = MD5Service.getHash(base64EncodedMessage);
+            String hashedBase64EncodedMessage = SHA2.getHash(base64EncodedMessage);
 
             ECPoint signatureForHashed = ECDSAService.getSignature(hashedBase64EncodedMessage, yourPrivateKey);
 
@@ -39,7 +42,7 @@ public class CryptoService {
             AESObject aesObject = new AESObject(commonKey);
             byte[] decodedByteArray = aesObject.decrypt(base64DecodedEncryptedMessage);
 
-            String hashedBase64DecodedMessage = MD5Service.getHash(new String(decodedByteArray));
+            String hashedBase64DecodedMessage = SHA2.getHash(new String(decodedByteArray));
 
             boolean isValidSignature = ECDSAService.isValid(hashedBase64DecodedMessage, otherPublicKey, pair.signature);
 

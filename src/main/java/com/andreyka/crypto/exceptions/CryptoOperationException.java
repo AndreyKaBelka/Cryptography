@@ -1,4 +1,4 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.exceptions;
 
 public class CryptoOperationException extends RuntimeException {
     public CryptoOperationException(String message, Throwable cause) {

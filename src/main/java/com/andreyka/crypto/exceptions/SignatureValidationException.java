@@ -1,4 +1,4 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.exceptions;
 
 public class SignatureValidationException extends RuntimeException {
     public SignatureValidationException(String message) {
