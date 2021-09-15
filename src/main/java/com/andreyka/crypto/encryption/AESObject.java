@@ -1,4 +1,7 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.encryption;
+
+import com.andreyka.crypto.Algorithm;
+import com.andreyka.crypto.api.EncryptionService;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -7,18 +10,17 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class AESObject {
-    private final Word[] words;
+@Algorithm("AES")
+public class AESObject implements EncryptionService {
+    private Word[] words;
 
-    public AESObject(BigInteger key) {
-        this.words = keyExpansion(key);
-    }
-
-    public byte[] encrypt(String text) {
+    public byte[] encrypt(String text, BigInteger commonKey) {
+        this.words = keyExpansion(commonKey);
         return intToByteArray(encrypt(getArrayOfInt(text.getBytes())));
     }
 
-    public byte[] decrypt(byte[] text) {
+    public byte[] decrypt(byte[] text, BigInteger commonKey) {
+        this.words = keyExpansion(commonKey);
         return intToByteArray(decrypt(getArrayOfInt(text)));
     }
 
