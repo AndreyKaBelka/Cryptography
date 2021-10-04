@@ -1,4 +1,4 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.encryption;
 
 class Word {
     private final int[] w;

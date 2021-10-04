@@ -1,4 +1,4 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.api;
 
 import com.andreyka.crypto.exceptions.ECPointParseException;
 import org.junit.Test;
@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 public class ECPointParseTest {
 
     @Test
-    public void parseValue() throws CloneNotSupportedException {
+    public void parseValue() {
         KeyPair generatedPair = new KeyPair();
         ECPoint point = generatedPair.getPublicKey();
         ECPoint parsedPoint = ECPoint.parseValue(point.toString());

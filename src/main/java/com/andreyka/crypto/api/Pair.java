@@ -1,4 +1,4 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.api;
 
 
 public class Pair {

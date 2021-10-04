@@ -1,7 +1,14 @@
 package com.andreyka.crypto;
 
+import com.andreyka.crypto.api.ECPoint;
+import com.andreyka.crypto.api.EncryptionService;
+import com.andreyka.crypto.api.Hash;
+import com.andreyka.crypto.api.Pair;
+import com.andreyka.crypto.eliptic.ECDSAService;
+import com.andreyka.crypto.encryption.Base64;
 import com.andreyka.crypto.exceptions.CryptoOperationException;
 import com.andreyka.crypto.exceptions.SignatureValidationException;
+import com.andreyka.crypto.hashes.SHA2;
 
 import java.math.BigInteger;
 
@@ -15,12 +22,12 @@ class CryptoService {
     static Pair encrypt(BigInteger commonKey, BigInteger yourPrivateKey, String text) throws CryptoOperationException {
         try {
             String base64EncodedMessage = Base64.encode(text);
-            String hashedBase64EncodedMessage = SHA2.getHash(base64EncodedMessage);
+            Hash hashedBase64EncodedMessage = SHA2.getHash(base64EncodedMessage);
 
             ECPoint signatureForHashed = ECDSAService.getSignature(hashedBase64EncodedMessage, yourPrivateKey);
 
-            AESObject aesObject = new AESObject(commonKey);
-            byte[] bytes = aesObject.encrypt(base64EncodedMessage);
+            EncryptionService encryptionService = EncryptionService.getService("AES");
+            byte[] bytes = encryptionService.encrypt(base64EncodedMessage, commonKey);
             String base64BytesEncoded = Base64.encode(bytes);
 
             return new Pair(base64BytesEncoded, signatureForHashed);
@@ -39,10 +46,10 @@ class CryptoService {
     static String decrypt(BigInteger commonKey, ECPoint otherPublicKey, Pair pair) throws CryptoOperationException, SignatureValidationException {
         try {
             byte[] base64DecodedEncryptedMessage = Base64.decode(pair.text);
-            AESObject aesObject = new AESObject(commonKey);
-            byte[] decodedByteArray = aesObject.decrypt(base64DecodedEncryptedMessage);
+            EncryptionService encryptionService = EncryptionService.getService("AES");
+            byte[] decodedByteArray = encryptionService.decrypt(base64DecodedEncryptedMessage, commonKey);
 
-            String hashedBase64DecodedMessage = SHA2.getHash(new String(decodedByteArray));
+            Hash hashedBase64DecodedMessage = SHA2.getHash(new String(decodedByteArray));
 
             boolean isValidSignature = ECDSAService.isValid(hashedBase64DecodedMessage, otherPublicKey, pair.signature);
 

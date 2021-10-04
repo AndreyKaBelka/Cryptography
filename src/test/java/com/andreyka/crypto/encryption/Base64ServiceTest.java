@@ -1,4 +1,4 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.encryption;
 
 import org.junit.Assert;
 import org.junit.Test;

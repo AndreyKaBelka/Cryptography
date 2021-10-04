@@ -1,6 +1,8 @@
 package com.andreyka.crypto;
 
 
+import com.andreyka.crypto.api.KeyPair;
+import com.andreyka.crypto.api.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,14 +15,14 @@ public class CryptoServiceTest {
     private KeyPair otherUser;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         myUser = new KeyPair();
         otherUser = new KeyPair();
     }
 
     @Test
-    public void cryptoTest() throws CloneNotSupportedException {
-        BigInteger commonKey = ECCService.getCommonKey(otherUser.getPublicKey(), myUser.getPrivateKey());
+    public void cryptoTest() throws NoSuchMethodException {
+        BigInteger commonKey = otherUser.getPublicKey().getCommonKey(myUser.getPrivateKey());
         Pair pair = CryptoService.encrypt(commonKey, myUser.getPrivateKey(), TEXT_TO_CRYPT);
 
         //Сюда кладем свой публичный ключ потому-что при получении сообщения

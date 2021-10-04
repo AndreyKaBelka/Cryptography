@@ -1,4 +1,4 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.hashes;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
