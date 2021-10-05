@@ -34,7 +34,7 @@ public class Base64 {
                 highest_bits = (byte) (copy[i + j] >> cnt_bits);
                 highest_bits &= mask_127;
 
-                byte index = (byte) (highest_bits | (lastBits << (8 - cnt_bits)));
+                byte index = (byte) (highest_bits & 0xff | (lastBits << (8 - cnt_bits)));
                 rez.append(chars.charAt(index));
 
                 lastBits = (byte) (copy[i + j] & mask);
