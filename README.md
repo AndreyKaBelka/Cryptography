@@ -1,5 +1,5 @@
 # Messenger
-Library with self-implementation of some encrypting algorithms like ECDSA, ECC, AES, MD5
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AndreyKaBelka_Cryptography&metric=alert_status)](https://sonarcloud.io/dashboard?id=AndreyKaBelka_Cryptography)
+![Build](https://github.com/AndreyKaBelka/Cryptography/actions/workflows/build.yml/badge.svg)
 
-## Sonar Cloud 
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AndreyKaBelka_Cryptography)](https://sonarcloud.io/dashboard?id=AndreyKaBelka_Cryptography)
+Library with self-implementation of some encrypting algorithms like ECDSA, ECC, AES, MD5
