@@ -8,6 +8,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class ReflectionUtils {
+    private ReflectionUtils() {
+
+    }
+
     private static Class<?>[] getService(Class<?> service) {
         Reflections reflections = new Reflections(ReflectionUtils.class.getPackageName());
         return reflections.getSubTypesOf(service).toArray(Class<?>[]::new);
