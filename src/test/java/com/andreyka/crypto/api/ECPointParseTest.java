@@ -1,9 +1,10 @@
 package com.andreyka.crypto.api;
 
 import com.andreyka.crypto.exceptions.ECPointParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ECPointParseTest {
 
@@ -15,9 +16,9 @@ public class ECPointParseTest {
         assertEquals(point, parsedPoint);
     }
 
-    @Test(expected = ECPointParseException.class)
+    @Test
     public void parseValueWithException() {
         String wrongString = "123";
-        ECPoint.parseValue(wrongString);
+        Assertions.assertThrows(ECPointParseException.class, () ->  ECPoint.parseValue(wrongString));
     }
 }

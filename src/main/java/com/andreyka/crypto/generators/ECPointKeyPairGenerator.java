@@ -6,7 +6,6 @@ import com.andreyka.crypto.api.ECPoint;
 import com.andreyka.crypto.api.KeyPairGenerator;
 import com.andreyka.crypto.constants.Inputs;
 import com.andreyka.crypto.eliptic.ECCService;
-import com.andreyka.crypto.exceptions.CryptoOperationException;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -16,11 +15,7 @@ public class ECPointKeyPairGenerator implements KeyPairGenerator {
     public ECPoint genPublicKey(BigInteger d) {
         Inputs[] inputs = Inputs.values();
         ECPoint g = new ECPoint(inputs);
-        try {
-            return (ECPoint) ReflectionUtils.getMethodResult(ECCService.class, "multiply", g, d);
-        } catch (NoSuchMethodException e) {
-            throw new CryptoOperationException("Something went wrong : ", e.getCause());
-        }
+        return (ECPoint) ReflectionUtils.getMethodResult(ECCService.class, "multiply", g, d);
     }
 
     public BigInteger genPrivateKey() {

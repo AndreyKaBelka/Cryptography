@@ -1,5 +1,6 @@
 package com.andreyka.crypto;
 
+import lombok.SneakyThrows;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +18,8 @@ public class ReflectionUtils {
         return reflections.getSubTypesOf(service).toArray(Class<?>[]::new);
     }
 
-    public static <T> T getInstance(Class<T> clazz, String alg) throws NoSuchAlgorithmException {
+    @SneakyThrows
+    public static <T> T getInstance(Class<T> clazz, String alg) {
         try {
             Class<?>[] classes = getService(clazz);
             for (Class<?> aClass : classes) {
@@ -42,7 +44,8 @@ public class ReflectionUtils {
         }
     }
 
-    public static Object getMethodResult(Class<?> clazz, String methodName, Object... parameters) throws NoSuchMethodException {
+    @SneakyThrows
+    public static Object getMethodResult(Class<?> clazz, String methodName, Object... parameters) {
         Class<?>[] types = Arrays.stream(parameters).map(Object::getClass).toArray(Class[]::new);
         Method method = getMethod(clazz, methodName, types);
         try {

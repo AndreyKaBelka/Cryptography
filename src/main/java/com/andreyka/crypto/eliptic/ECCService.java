@@ -68,7 +68,7 @@ public class ECCService {
      */
     static ECPoint multiply(ECPoint point, BigInteger num) {
         ECPoint ecPoint = point;
-        ECPoint temp = (ECPoint) point.clone();
+        ECPoint temp = new ECPoint(point);
         BigInteger cnt = num.subtract(BigInteger.ONE);
         while (cnt.compareTo(BigInteger.ZERO) > 0) {
             if (cnt.mod(BigInteger.TWO).compareTo(BigInteger.ZERO) != 0) {

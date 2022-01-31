@@ -3,8 +3,8 @@ package com.andreyka.crypto.api;
 import com.andreyka.crypto.ReflectionUtils;
 import com.andreyka.crypto.constants.Inputs;
 import com.andreyka.crypto.eliptic.ECCService;
-import com.andreyka.crypto.exceptions.CryptoOperationException;
 import com.andreyka.crypto.exceptions.ECPointParseException;
+import lombok.SneakyThrows;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -12,12 +12,20 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ECPoint implements Cloneable, Serializable {
+public class ECPoint implements Serializable {
     private final BigInteger a;
     private final BigInteger b;
     private final BigInteger p;
     private final BigInteger x;
     private final BigInteger y;
+
+    public ECPoint(ECPoint ecPoint) {
+        this.a = new BigInteger(ecPoint.a.toString());
+        this.b = new BigInteger(ecPoint.b.toString());
+        this.p = new BigInteger(ecPoint.p.toString());
+        this.x = new BigInteger(ecPoint.x.toString());
+        this.y = new BigInteger(ecPoint.y.toString());
+    }
 
     public ECPoint(BigInteger r, BigInteger s) {
         x = r;
@@ -57,7 +65,8 @@ public class ECPoint implements Cloneable, Serializable {
         } else throw new ECPointParseException(String.format("Can`t parse this string: %s", value));
     }
 
-    public BigInteger getCommonKey(BigInteger yourPrivateKey) throws NoSuchMethodException {
+    @SneakyThrows
+    public BigInteger getCommonKey(BigInteger yourPrivateKey) {
         ECPoint invoke = (ECPoint) ReflectionUtils.getMethodResult(ECCService.class, "multiply", this, yourPrivateKey);
         return invoke.getX();
     }
@@ -85,15 +94,6 @@ public class ECPoint implements Cloneable, Serializable {
     @Override
     public String toString() {
         return "{" + this.x + ";" + this.y + "}";
-    }
-
-    @Override
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new CryptoOperationException("Try again later", e.getCause());
-        }
     }
 
     @Override
