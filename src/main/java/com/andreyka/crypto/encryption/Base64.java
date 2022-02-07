@@ -1,7 +1,10 @@
 package com.andreyka.crypto.encryption;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.ArrayList;
 
+@UtilityClass
 public class Base64 {
     private static final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

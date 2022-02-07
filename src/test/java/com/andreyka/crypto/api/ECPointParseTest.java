@@ -11,7 +11,7 @@ public class ECPointParseTest {
     @Test
     public void parseValue() {
         KeyPair generatedPair = new KeyPair();
-        ECPoint point = generatedPair.getPublicKey();
+        ECPoint point = generatedPair.getPublicKey().getPointPublicKey();
         ECPoint parsedPoint = ECPoint.parseValue(point.toString());
         assertEquals(point, parsedPoint);
     }

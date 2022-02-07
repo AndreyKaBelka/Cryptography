@@ -1,26 +1,38 @@
 package com.andreyka.crypto.api;
 
-import com.andreyka.crypto.ReflectionUtils;
+import com.andreyka.crypto.constants.Inputs;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
+import java.security.SecureRandom;
 
 @Slf4j
+@Value
 public class KeyPair {
-    private final ECPoint publicKey;
-    private final BigInteger privateKey;
-    private final static KeyPairGenerator generator = ReflectionUtils.getInstance(KeyPairGenerator.class, "ECC");
+    PublicKey publicKey;
+    PrivateKey privateKey;
 
     public KeyPair() {
-        this.privateKey = generator.genPrivateKey();
-        this.publicKey = generator.genPublicKey(this.privateKey);
+        this.privateKey = genPrivateKey();
+        this.publicKey = genPublicKey(this.privateKey);
     }
 
-    public BigInteger getPrivateKey() {
-        return privateKey;
+    private PublicKey genPublicKey(PrivateKey privateKey) {
+        Inputs[] inputs = Inputs.values();
+        ECPoint g = new ECPoint(inputs);
+        BigInteger d = privateKey.getNumberPrivateKey();
+        ECPoint pointPubKey = g.multiply(d);
+        return PublicKey.create(pointPubKey);
     }
 
-    public ECPoint getPublicKey() {
-        return publicKey;
+    private PrivateKey genPrivateKey() {
+        BigInteger key;
+        SecureRandom rnd = new SecureRandom();
+        do {
+            key = new BigInteger(Inputs.N.value.bitLength(), rnd);
+        } while (key.compareTo(Inputs.N.value.subtract(BigInteger.ONE)) >= 0);
+        key = key.mod(Inputs.P.value);
+        return PrivateKey.create(key);
     }
 }

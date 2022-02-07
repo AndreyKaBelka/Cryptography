@@ -1,12 +1,10 @@
 package com.andreyka.crypto.api;
 
 
-public class Pair {
-    public final String text;
-    public final ECPoint signature;
+import lombok.Value;
 
-    public Pair(String text, ECPoint signature) {
-        this.text = text;
-        this.signature = signature;
-    }
+@Value
+public class Pair {
+    public String text;
+    public Signature signature;
 }

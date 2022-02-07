@@ -21,7 +21,7 @@ public class TimingExtension implements BeforeTestExecutionCallback, AfterTestEx
     private final Map<String, Pair> timeOfTests = new HashMap<>();
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context) {
         stopwatch.stop();
 
         String testName = context.getRequiredTestMethod().getName();
@@ -39,7 +39,7 @@ public class TimingExtension implements BeforeTestExecutionCallback, AfterTestEx
     }
 
     @Override
-    public void beforeTestExecution(ExtensionContext context) throws Exception {
+    public void beforeTestExecution(ExtensionContext context) {
         stopwatch.start();
     }
 

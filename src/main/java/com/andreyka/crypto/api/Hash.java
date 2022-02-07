@@ -1,19 +1,14 @@
 package com.andreyka.crypto.api;
 
+import lombok.Value;
+
 import java.math.BigInteger;
 
+@Value
 public class Hash {
-    private final BigInteger hash;
-
-    public Hash(String hash) {
-        this.hash = new BigInteger(hash, 16);
-    }
+    String stringHash;
 
     public BigInteger getNumber() {
-        return hash;
-    }
-
-    public String getString() {
-        return hash.toString(16);
+        return new BigInteger(stringHash, 16);
     }
 }

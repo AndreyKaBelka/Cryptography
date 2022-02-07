@@ -1,25 +1,38 @@
 package com.andreyka.crypto.encryption;
 
-import com.andreyka.crypto.Algorithm;
-import com.andreyka.crypto.api.EncryptionService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-@Algorithm("AES")
-public class AESObject implements EncryptionService {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class AESObject {
+    private final byte[] text;
+    private final BigInteger commonKey;
     private Word[] words;
 
-    public byte[] encrypt(String text, BigInteger commonKey) {
-        this.words = keyExpansion(commonKey);
-        return intToByteArray(encrypt(getArrayOfInt(text.getBytes())));
+    public static byte[] encrypt(String text, BigInteger commonKey) {
+        AESObject aesObject = new AESObject(text.getBytes(StandardCharsets.UTF_8), commonKey);
+        return aesObject.encrypt();
     }
 
-    public byte[] decrypt(byte[] text, BigInteger commonKey) {
+    public static byte[] decrypt(byte[] text, BigInteger commonKey) {
+        AESObject aesObject = new AESObject(text, commonKey);
+        return aesObject.decrypt();
+    }
+
+    private byte[] encrypt() {
+        this.words = keyExpansion(commonKey);
+        return intToByteArray(encrypt(getArrayOfInt(text)));
+    }
+
+    private byte[] decrypt() {
         this.words = keyExpansion(commonKey);
         return intToByteArray(decrypt(getArrayOfInt(text)));
     }
@@ -251,7 +264,7 @@ public class AESObject implements EncryptionService {
     private void addRoundKey(int[][] bytes, int r) {
         for (int i = 0; i < AESConsts.Nb; i++) {
             for (int j = 0; j < 4; j++) {
-                bytes[i][j] = sum(bytes[i][j], words[AESConsts.Nb * r + j].getIndex(i));
+                bytes[i][j] = sum(bytes[i][j], words[AESConsts.Nb * r + j].getValue(i));
             }
         }
     }
