@@ -1,4 +1,4 @@
-package com.andreyka.crypto.api;
+package com.andreyka.crypto.models;
 
 import lombok.Value;
 

@@ -1,4 +1,4 @@
-package com.andreyka.crypto.message;
+package com.andreyka.crypto.models;
 
 import lombok.ToString;
 import lombok.Value;

@@ -1,9 +1,7 @@
-package com.andreyka.crypto.api;
+package com.andreyka.crypto.models;
 
 import com.google.common.base.Stopwatch;
 import lombok.AllArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;

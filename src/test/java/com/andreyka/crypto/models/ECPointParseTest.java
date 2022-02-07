@@ -1,4 +1,4 @@
-package com.andreyka.crypto.api;
+package com.andreyka.crypto.models;
 
 import com.andreyka.crypto.exceptions.ECPointParseException;
 import org.junit.jupiter.api.Assertions;

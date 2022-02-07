@@ -1,6 +1,5 @@
-package com.andreyka.crypto.message;
+package com.andreyka.crypto.models;
 
-import com.andreyka.crypto.api.Hash;
 import lombok.Data;
 import lombok.ToString;
 

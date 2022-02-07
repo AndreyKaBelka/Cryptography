@@ -1,8 +1,5 @@
-package com.andreyka.crypto.message;
+package com.andreyka.crypto.models;
 
-import com.andreyka.crypto.api.Hash;
-import com.andreyka.crypto.api.PrivateKey;
-import com.andreyka.crypto.api.Signature;
 import com.andreyka.crypto.eliptic.ECDSAService;
 import com.andreyka.crypto.hashes.SHA2;
 import lombok.AccessLevel;

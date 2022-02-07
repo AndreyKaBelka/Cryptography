@@ -1,6 +1,6 @@
 package com.andreyka.crypto;
 
-import com.andreyka.crypto.api.*;
+import com.andreyka.crypto.models.*;
 import com.andreyka.crypto.eliptic.ECDSAService;
 import com.andreyka.crypto.encryption.AESObject;
 import com.andreyka.crypto.encryption.Base64;
@@ -36,7 +36,7 @@ class CryptoService {
     /**
      * @param commonKey      common key of two users
      * @param otherPublicKey public key other user
-     * @param pair           Pair pair class that contain encrypted text and signature
+     * @param pair           Pair class that contain encrypted text and signature
      * @return decrypted string
      * @throws SignatureValidationException if signature isn`t valid for this message
      */

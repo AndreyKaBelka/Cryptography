@@ -1,4 +1,4 @@
-package com.andreyka.crypto.api;
+package com.andreyka.crypto.models;
 
 import com.andreyka.crypto.constants.Inputs;
 import com.andreyka.crypto.exceptions.ECPointParseException;

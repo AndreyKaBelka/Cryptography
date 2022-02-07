@@ -1,8 +1,8 @@
 package com.andreyka.crypto;
 
 
-import com.andreyka.crypto.api.KeyPair;
-import com.andreyka.crypto.api.Pair;
+import com.andreyka.crypto.models.KeyPair;
+import com.andreyka.crypto.models.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
