@@ -1,19 +1,20 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.utils;
 
 import com.andreyka.crypto.containers.CommonKeysContainer;
 import com.andreyka.crypto.containers.MineInfoContainer;
 import com.andreyka.crypto.eliptic.ECDSAService;
 import com.andreyka.crypto.encryption.AESObject;
 import com.andreyka.crypto.encryption.Base64;
+import com.andreyka.crypto.exceptions.CryptoOperationException;
+import com.andreyka.crypto.exceptions.SignatureValidationException;
 import com.andreyka.crypto.hashes.SHA2;
-import com.andreyka.crypto.models.Hash;
-import com.andreyka.crypto.models.Signature;
-import com.andreyka.crypto.models.User;
+import com.andreyka.crypto.models.*;
 import com.andreyka.crypto.models.keyexchange.GroupMessage;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -40,18 +41,33 @@ public class EncryptionUtils {
         return map;
     }
 
+    public String decryption(final GroupMessage<String> message) {
+        BigInteger commonKey = CommonKeysContainer.INSTANCE.getCommonKeyForUser(message.getUserId());
+        return decrypt(message.getMessage(), commonKey);
+    }
+
+
     public <T> void groupSignature(Map<Long, GroupMessage<T>> object) {
+        PrivateKey myPrivateKey = MineInfoContainer.INSTANCE.getPrivateKey();
         for (GroupMessage<T> t : object.values()) {
-            Signature signature = signature(t.forSign());
+            Signature signature = signature(t.forSign(), myPrivateKey);
             t.setSignature(signature);
         }
     }
 
-    public <T> Signature signature(T object) {
-        String base64 = Base64.encode(object.toString());
-        Hash hash = SHA2.getHash(base64);
+    public <T> void verifySign(GroupMessage<T> message) {
+        Signature signature = message.getSignature();
+        PublicKey publicKey = MineInfoContainer.INSTANCE.getPublicKey();
 
-        return ECDSAService.getSignature(hash, MineInfoContainer.INSTANCE.getPrivateKey());
+        Hash hash = SHA2.getHash(message.forSign());
+        if (!ECDSAService.isValid(hash, publicKey, signature)) {
+            throw new SignatureValidationException("");
+        }
+    }
+
+    public <T> Signature signature(T object, PrivateKey privateKey) {
+        Hash hash = SHA2.getHash(object.toString());
+        return ECDSAService.getSignature(hash, privateKey);
     }
 
     public String encrypt(String text, BigInteger commonKey) {
@@ -59,5 +75,12 @@ public class EncryptionUtils {
 
         byte[] bytes = AESObject.encrypt(base64EncodedMessage, commonKey);
         return Base64.encode(bytes);
+    }
+
+    public String decrypt(String text, BigInteger commonKey) {
+        byte[] base64Decoded = Base64.decode(text);
+
+        byte[] decrypt = AESObject.decrypt(base64Decoded, commonKey);
+        return new String(Base64.decode(decrypt), StandardCharsets.UTF_8);
     }
 }

@@ -1,5 +1,6 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.utils;
 
+import com.andreyka.crypto.containers.CommonKeysContainer;
 import com.andreyka.crypto.containers.KeyConfirmationContainer;
 import com.andreyka.crypto.containers.MineInfoContainer;
 import com.andreyka.crypto.hashes.SHA2;
@@ -21,11 +22,19 @@ public class NPOneUtils {
         return user.getKey().getCommonKey(key);
     }
 
-    public <T> void addKeyEncryption(Map<Long, GroupMessage<String>> messages) {
+    public void addKeyConfirmations(Map<Long, GroupMessage<String>> messages) {
         for (Map.Entry<Long, GroupMessage<String>> pair: messages.entrySet()) {
             Hash keyConfirmation = KeyConfirmationContainer.INSTANCE.getKeyConfirmationForUser(pair.getKey());
             pair.getValue().setKeyConfirmation(keyConfirmation);
         }
+    }
+
+    public void generateKeyAndKeyConfirmation(final User user) {
+        BigInteger newKey = NPOneUtils.generateCommonKey(user);
+        CommonKeysContainer.INSTANCE.addCommonKeyForUser(user.getUserId(), newKey);
+
+        Hash keyConfirmation = NPOneUtils.getKeyConfirmationHash(newKey, user.getUserId());
+        KeyConfirmationContainer.INSTANCE.addKeyConfirmationForUser(user.getUserId(), keyConfirmation);
     }
 
     public User[] getOtherParticipants(final Chat chat) {

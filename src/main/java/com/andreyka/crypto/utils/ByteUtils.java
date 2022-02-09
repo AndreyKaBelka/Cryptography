@@ -1,7 +1,10 @@
-package com.andreyka.crypto;
+package com.andreyka.crypto.utils;
+
+import lombok.experimental.UtilityClass;
 
 import java.nio.ByteBuffer;
 
+@UtilityClass
 public class ByteUtils {
     private static final ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
 
@@ -12,7 +15,7 @@ public class ByteUtils {
 
     public static long bytesToLong(byte[] bytes) {
         buffer.put(bytes, 0, bytes.length);
-        buffer.flip();//need flip
+        buffer.flip();
         return buffer.getLong();
     }
 }

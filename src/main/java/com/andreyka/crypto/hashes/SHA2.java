@@ -1,6 +1,6 @@
 package com.andreyka.crypto.hashes;
 
-import com.andreyka.crypto.ByteUtils;
+import com.andreyka.crypto.utils.ByteUtils;
 import com.andreyka.crypto.models.Hash;
 
 import java.nio.ByteBuffer;

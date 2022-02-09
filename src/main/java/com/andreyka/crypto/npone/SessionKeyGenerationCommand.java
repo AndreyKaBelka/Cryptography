@@ -1,0 +1,36 @@
+package com.andreyka.crypto.npone;
+
+import com.andreyka.crypto.containers.CommonKeysContainer;
+import com.andreyka.crypto.containers.KeyConfirmationContainer;
+import com.andreyka.crypto.exceptions.CryptoOperationException;
+import com.andreyka.crypto.models.Chat;
+import com.andreyka.crypto.models.Hash;
+import com.andreyka.crypto.models.keyexchange.GroupMessage;
+import com.andreyka.crypto.utils.EncryptionUtils;
+
+import java.math.BigInteger;
+
+public class SessionKeyGenerationCommand implements NPOneCommand{
+    @Override
+    public Object execute(Chat chat) {
+        return null;
+    }
+
+    private void generateSessionKey(final GroupMessage<String> message) {
+        Hash keyConfirmation = KeyConfirmationContainer.INSTANCE.getKeyConfirmationForUser(message.getUserId());
+
+        if (!keyConfirmation.equals(message.getKeyConfirmation())) {
+            throw new CryptoOperationException("Key`s confirmation don't equals!");
+        }
+
+        EncryptionUtils.verifySign(message);
+
+    }
+
+    private String decrypt(GroupMessage<String> message) {
+        BigInteger commonKey = CommonKeysContainer.INSTANCE.getCommonKeyForUser(message.getUserId());
+        String decryptedMessage = EncryptionUtils.decrypt(message.getMessage(), commonKey);
+
+        return decryptedMessage;
+    }
+}
