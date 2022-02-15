@@ -4,7 +4,6 @@ package com.andreyka.crypto.containers;
 import com.andreyka.crypto.models.KeyPair;
 import com.andreyka.crypto.models.PrivateKey;
 import com.andreyka.crypto.models.PublicKey;
-import com.andreyka.crypto.models.User;
 
 public enum MineInfoContainer {
     INSTANCE;

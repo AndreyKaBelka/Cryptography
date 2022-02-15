@@ -2,6 +2,7 @@ package com.andreyka.crypto.npone;
 
 import com.andreyka.crypto.containers.CommonKeysContainer;
 import com.andreyka.crypto.containers.KeyConfirmationContainer;
+import com.andreyka.crypto.containers.SecretSharesContainer;
 import com.andreyka.crypto.exceptions.CryptoOperationException;
 import com.andreyka.crypto.models.Chat;
 import com.andreyka.crypto.models.Hash;
@@ -10,7 +11,7 @@ import com.andreyka.crypto.utils.EncryptionUtils;
 
 import java.math.BigInteger;
 
-public class SessionKeyGenerationCommand implements NPOneCommand{
+public class SessionKeyGenerationCommand implements NPOneCommand {
     @Override
     public Object execute(Chat chat) {
         return null;
@@ -24,13 +25,18 @@ public class SessionKeyGenerationCommand implements NPOneCommand{
         }
 
         EncryptionUtils.verifySign(message);
+        String secretShare = decrypt(message);
 
+        SecretSharesContainer.INSTANCE.addSecretShareForChatIdAndUserId(
+            message.getChatId(),
+            message.getUserId(),
+            new Hash(secretShare)
+        );
     }
 
     private String decrypt(GroupMessage<String> message) {
         BigInteger commonKey = CommonKeysContainer.INSTANCE.getCommonKeyForUser(message.getUserId());
-        String decryptedMessage = EncryptionUtils.decrypt(message.getMessage(), commonKey);
 
-        return decryptedMessage;
+        return EncryptionUtils.decrypt(message.getMessage(), commonKey);
     }
 }

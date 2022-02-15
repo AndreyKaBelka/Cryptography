@@ -1,13 +1,11 @@
 package com.andreyka.crypto.containers;
 
-import lombok.Getter;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public enum CommonKeysContainer {
     INSTANCE;
 

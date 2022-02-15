@@ -16,15 +16,16 @@ repositories {
 
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
-
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testCompileOnly 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testImplementation 'com.google.guava:guava:31.0.1-jre'
 
+    implementation 'org.projectlombok:lombok:1.18.22'
     implementation 'org.slf4j:slf4j-simple:1.7.35'
+    implementation 'commons-dbutils:commons-dbutils:1.7'
     implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'com.h2database:h2:2.1.210'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+
+    testImplementation 'com.google.guava:guava:31.0.1-jre'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
