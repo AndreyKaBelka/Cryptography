@@ -91,30 +91,42 @@ public class AESObject {
         int[] bytes_out = new int[4 * AESConsts.Nb * (bytes.size() >> 4)];
 
         for (int cnt = 0; cnt < bytes.size() >> 4; cnt++) {
-            int[] sub_arr = getSubArr(cnt << 4, (cnt + 1) << 4, bytes);
-            int[][] state = getState(sub_arr);
-
-            addRoundKey(state, 0);
-
-            for (int round = 1; round < AESConsts.Nr; round++) {
-                subBytes(state);
-                shiftRows(state);
-                mixColumns(state);
-                addRoundKey(state, round);
-            }
-
-            subBytes(state);
-            shiftRows(state);
-            addRoundKey(state, AESConsts.Nr);
-
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < AESConsts.Nb; j++) {
-                    bytes_out[i + (cnt << 4) + (j << 2)] = state[i][j];
-                }
-            }
+            blockEncrypt(bytes, bytes_out, cnt);
         }
 
         return bytes_out;
+    }
+
+    private void blockEncrypt(ArrayList<Integer> bytes, int[] bytes_out, int cnt) {
+        int[] sub_arr = getSubArr(cnt << 4, (cnt + 1) << 4, bytes);
+        int[][] state = getState(sub_arr);
+
+        addRoundKey(state, 0);
+
+        for (int round = 1; round < AESConsts.Nr; round++) {
+            oneRound(state, round);
+        }
+
+        finalRound(state);
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < AESConsts.Nb; j++) {
+                bytes_out[i + (cnt << 4) + (j << 2)] = state[i][j];
+            }
+        }
+    }
+
+    private void finalRound(int[][] state) {
+        subBytes(state);
+        shiftRows(state);
+        addRoundKey(state, AESConsts.Nr);
+    }
+
+    private void oneRound(int[][] state, int round) {
+        subBytes(state);
+        shiftRows(state);
+        mixColumns(state);
+        addRoundKey(state, round);
     }
 
     private int[] decrypt(int[] bytes_in) {
@@ -122,32 +134,44 @@ public class AESObject {
         int[] bytes_out = new int[4 * AESConsts.Nb * (bytes.size() >> 4)];
 
         for (int cnt = 0; cnt < bytes.size() >> 4; cnt++) {
-            int[] sub_arr = getSubArr(cnt << 4, (cnt + 1) << 4, bytes);
-            int[][] state = getState(sub_arr);
-
-            addRoundKey(state, AESConsts.Nr);
-
-            for (int round = AESConsts.Nr - 1; round >= 1; round--) {
-                invShiftRows(state);
-                invSubBytes(state);
-                addRoundKey(state, round);
-                invMixColumns(state);
-            }
-            invShiftRows(state);
-            invSubBytes(state);
-            addRoundKey(state, 0);
-
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < AESConsts.Nb; j++) {
-                    bytes_out[i + (j << 2) + (cnt << 4)] = state[i][j];
-                }
-            }
+            blockDecrypt(bytes, bytes_out, cnt);
         }
 
         int[] normal = new int[bytes_out[0]];
         System.arraycopy(bytes_out, 1, normal, 0, normal.length);
 
         return normal;
+    }
+
+    private void blockDecrypt(ArrayList<Integer> bytes, int[] bytes_out, int cnt) {
+        int[] sub_arr = getSubArr(cnt << 4, (cnt + 1) << 4, bytes);
+        int[][] state = getState(sub_arr);
+
+        addRoundKey(state, AESConsts.Nr);
+
+        for (int round = AESConsts.Nr - 1; round >= 1; round--) {
+            invRound(state, round);
+        }
+        invFinalRound(state);
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < AESConsts.Nb; j++) {
+                bytes_out[i + (j << 2) + (cnt << 4)] = state[i][j];
+            }
+        }
+    }
+
+    private void invFinalRound(int[][] state) {
+        invShiftRows(state);
+        invSubBytes(state);
+        addRoundKey(state, 0);
+    }
+
+    private void invRound(int[][] state, int round) {
+        invShiftRows(state);
+        invSubBytes(state);
+        addRoundKey(state, round);
+        invMixColumns(state);
     }
 
     /**
@@ -179,13 +203,10 @@ public class AESObject {
         int a = a1;
         int b = b1;
         while (a != 0 && b != 0) {
-            if ((b & 0x01) == 1)
-                p ^= a;
+            if ((b & 0x01) == 1) p ^= a;
 
-            if (a >= 128)
-                a = (a << 1) ^ 0x11b;
-            else
-                a <<= 1;
+            if (a >= 128) a = (a << 1) ^ 0x11b;
+            else a <<= 1;
             b >>= 1;
         }
         return p;
