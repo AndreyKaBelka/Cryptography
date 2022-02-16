@@ -9,6 +9,7 @@ import com.andreyka.crypto.exceptions.SignatureValidationException;
 import com.andreyka.crypto.hashes.SHA2;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 class CryptoService {
     /**
@@ -50,7 +51,7 @@ class CryptoService {
             boolean isValidSignature = ECDSAService.isValid(hashedBase64DecodedMessage, otherPublicKey, pair.signature);
 
             if (isValidSignature) {
-                return new String(Base64.decode(decodedByteArray));
+                return new String(Base64.decode(decodedByteArray), StandardCharsets.UTF_8);
             } else {
                 throw new SignatureValidationException("Signature isn`t valid!");
             }
