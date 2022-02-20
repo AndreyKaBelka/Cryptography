@@ -59,7 +59,11 @@ public class EncryptionUtils {
         PublicKey publicKey = ChatsContainer.INSTANCE.getUserById(message.getChatId(), message.getUserId()).getKey();
 
         Hash hash = forSign(message);
-        if (!ECDSAService.isValid(hash, publicKey, signature)) {
+        validateSign(hash, publicKey, signature);
+    }
+
+    public void validateSign(Hash message, PublicKey publicKey, Signature signature) {
+        if (!ECDSAService.isValid(message, publicKey, signature)) {
             throw new SignatureValidationException("");
         }
     }

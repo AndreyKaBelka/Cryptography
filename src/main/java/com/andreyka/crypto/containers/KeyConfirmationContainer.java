@@ -7,7 +7,7 @@ import java.util.HashMap;
 public enum KeyConfirmationContainer {
     INSTANCE;
 
-    private HashMap<Long, Hash> container = new HashMap<>();
+    private final HashMap<Long, Hash> container = new HashMap<>();
 
     public void addKeyConfirmationForUser(final long userId, final Hash keyConfirmation) {
         container.put(userId, keyConfirmation);

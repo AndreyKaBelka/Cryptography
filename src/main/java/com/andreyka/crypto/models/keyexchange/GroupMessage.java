@@ -1,6 +1,5 @@
 package com.andreyka.crypto.models.keyexchange;
 
-import com.andreyka.crypto.containers.SessionIdsContainer;
 import com.andreyka.crypto.models.Hash;
 import com.andreyka.crypto.models.Signature;
 import lombok.RequiredArgsConstructor;

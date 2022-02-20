@@ -1,7 +1,7 @@
 package com.andreyka.crypto.eliptic;
 
-import com.andreyka.crypto.models.*;
 import com.andreyka.crypto.constants.Inputs;
+import com.andreyka.crypto.models.*;
 
 import java.math.BigInteger;
 

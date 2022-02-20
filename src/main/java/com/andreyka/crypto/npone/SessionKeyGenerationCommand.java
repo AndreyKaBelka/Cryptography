@@ -10,7 +10,7 @@ import com.andreyka.crypto.utils.EncryptionUtils;
 
 import java.math.BigInteger;
 
-public class SessionKeyGenerationCommand implements NPOneCommand<GroupMessage<String>,GroupMessage<String>> {
+public class SessionKeyGenerationCommand implements NPOneCommand<GroupMessage<String>, GroupMessage<String>> {
     @Override
     public GroupMessage<String> execute(GroupMessage<String> message) {
         return null;

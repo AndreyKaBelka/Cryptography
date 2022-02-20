@@ -1,6 +1,5 @@
 package com.andreyka.crypto.models;
 
-import com.andreyka.crypto.eliptic.ECDSAService;
 import com.andreyka.crypto.hashes.SHA2;
 import com.andreyka.crypto.utils.EncryptionUtils;
 import lombok.AccessLevel;

@@ -4,7 +4,10 @@ import com.andreyka.crypto.containers.CommonKeysContainer;
 import com.andreyka.crypto.containers.KeyConfirmationContainer;
 import com.andreyka.crypto.containers.MineInfoContainer;
 import com.andreyka.crypto.hashes.SHA2;
-import com.andreyka.crypto.models.*;
+import com.andreyka.crypto.models.Chat;
+import com.andreyka.crypto.models.Hash;
+import com.andreyka.crypto.models.PrivateKey;
+import com.andreyka.crypto.models.User;
 import com.andreyka.crypto.models.keyexchange.GroupMessage;
 import com.andreyka.crypto.models.keyexchange.KeyConfirmation;
 import com.andreyka.crypto.models.keyexchange.SecretShare;
@@ -23,7 +26,7 @@ public class NPOneUtils {
     }
 
     public void addKeyConfirmations(Map<Long, GroupMessage<String>> messages) {
-        for (Map.Entry<Long, GroupMessage<String>> pair: messages.entrySet()) {
+        for (Map.Entry<Long, GroupMessage<String>> pair : messages.entrySet()) {
             Hash keyConfirmation = KeyConfirmationContainer.INSTANCE.getKeyConfirmationForUser(pair.getKey());
             pair.getValue().setKeyConfirmation(keyConfirmation);
         }

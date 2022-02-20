@@ -1,13 +1,11 @@
 package com.andreyka.crypto.database;
 
 import com.andreyka.crypto.utils.H2JDBCUtils;
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 public abstract class Repository<T> {
     private final static QueryRunner run = new QueryRunner();
