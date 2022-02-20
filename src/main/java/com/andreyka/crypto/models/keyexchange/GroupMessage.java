@@ -23,10 +23,4 @@ public class GroupMessage<T> {
     @NonFinal
     @Setter
     Hash keyConfirmation;
-
-    public String forSign() {
-        Hash sessionId = SessionIdsContainer.INSTANCE.getSessionIdByChatId(chatId);
-
-        return userId + message.toString() + sessionId.toString();
-    }
 }

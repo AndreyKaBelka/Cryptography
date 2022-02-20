@@ -1,31 +1,39 @@
 package com.andreyka.crypto.containers;
 
 import com.andreyka.crypto.models.Hash;
-import org.apache.commons.collections4.map.HashedMap;
-import org.apache.commons.collections4.map.MultiKeyMap;
+import com.andreyka.crypto.observers.IObserver;
+import com.andreyka.crypto.observers.SessionKeyCreationObserver;
+
+import java.util.*;
 
 public enum SecretSharesContainer {
     INSTANCE;
 
-    private MultiKeyMap container = MultiKeyMap.multiKeyMap(new HashedMap<>());
+    private final Map<Long, Map<Long, Hash>> container = new HashMap<>();
+    private final ArrayList<IObserver> observers = new ArrayList<>();
 
-    public void addSecretShareForChatIdAndUserId(final long chatId, final long userId, final Hash shareSecret) {
-        container.put(chatId, userId, shareSecret);
+    {
+        observers.add(new SessionKeyCreationObserver());
     }
 
-    public Object count(final long chatId) {
-        return container.get(chatId);
+    public void addSecretShareForChatIdAndUserId(final long chatId, final long userId, final Hash shareSecret) {
+        container.computeIfAbsent(chatId, (key) -> new TreeMap<>()).put(userId, shareSecret);
+        notifyAllObservers(chatId);
+    }
+
+    public int count(final long chatId) {
+        return container.getOrDefault(chatId, Map.of()).values().size();
+    }
+
+    public List<Hash> getSecretShares(final long chatId) {
+        return new ArrayList<>(container.get(chatId).values());
     }
 
     public Hash getShareSecret(final long chatId, final long userId) {
-        return (Hash) container.get(chatId, userId);
+        return container.getOrDefault(chatId, Map.of()).getOrDefault(userId, null);
     }
 
-    public static void main(String[] args) {
-        SecretSharesContainer container = SecretSharesContainer.INSTANCE;
-        container.addSecretShareForChatIdAndUserId(1,1,new Hash("1"));
-        container.addSecretShareForChatIdAndUserId(1,2,new Hash("2"));
-        container.addSecretShareForChatIdAndUserId(1,3,new Hash("3"));
-        System.out.println(container.count(1));
+    private void notifyAllObservers(final long chatId) {
+        observers.forEach(observer -> observer.notify(chatId));
     }
 }

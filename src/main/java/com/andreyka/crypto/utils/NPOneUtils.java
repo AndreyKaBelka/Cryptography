@@ -17,8 +17,8 @@ import java.util.Map;
 @UtilityClass
 public class NPOneUtils {
 
-    public BigInteger generateCommonKey(final User user) {
-        PrivateKey key = MineInfoContainer.INSTANCE.getPrivateKey();
+    public BigInteger generateCommonKey(final User user, long chatId) {
+        PrivateKey key = MineInfoContainer.INSTANCE.getPrivateKey(chatId);
         return user.getKey().getCommonKey(key);
     }
 
@@ -29,8 +29,8 @@ public class NPOneUtils {
         }
     }
 
-    public void generateKeyAndKeyConfirmation(final User user) {
-        BigInteger newKey = NPOneUtils.generateCommonKey(user);
+    public void generateKeyAndKeyConfirmation(final long chatId, final User user) {
+        BigInteger newKey = NPOneUtils.generateCommonKey(user, chatId);
         CommonKeysContainer.INSTANCE.addCommonKeyForUser(user.getUserId(), newKey);
 
         Hash keyConfirmation = NPOneUtils.getKeyConfirmationHash(newKey, user.getUserId());
@@ -38,7 +38,7 @@ public class NPOneUtils {
     }
 
     public User[] getOtherParticipants(final Chat chat) {
-        long myId = MineInfoContainer.INSTANCE.getUserId();
+        long myId = MineInfoContainer.INSTANCE.getUserId(chat.getChatId());
         return chat.getParticipantsList().stream().filter((user) -> user.getUserId() != myId).toArray(User[]::new);
     }
 

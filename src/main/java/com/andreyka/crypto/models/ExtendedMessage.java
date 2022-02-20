@@ -19,7 +19,7 @@ public class ExtendedMessage {
 
     {
         try {
-            SecureRandom random = SecureRandom.getInstance("DRBG");
+            SecureRandom random = SecureRandom.getInstanceStrong();
             random.nextBytes(salt);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

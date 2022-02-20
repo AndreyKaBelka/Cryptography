@@ -16,4 +16,8 @@ public class Chat {
     public void removeUser(final User user) {
         participantsList.remove(user);
     }
+
+    public int getCountOfUsers() {
+        return participantsList.size();
+    }
 }

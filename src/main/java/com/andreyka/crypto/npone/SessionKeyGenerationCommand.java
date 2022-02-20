@@ -4,16 +4,15 @@ import com.andreyka.crypto.containers.CommonKeysContainer;
 import com.andreyka.crypto.containers.KeyConfirmationContainer;
 import com.andreyka.crypto.containers.SecretSharesContainer;
 import com.andreyka.crypto.exceptions.CryptoOperationException;
-import com.andreyka.crypto.models.Chat;
 import com.andreyka.crypto.models.Hash;
 import com.andreyka.crypto.models.keyexchange.GroupMessage;
 import com.andreyka.crypto.utils.EncryptionUtils;
 
 import java.math.BigInteger;
 
-public class SessionKeyGenerationCommand implements NPOneCommand {
+public class SessionKeyGenerationCommand implements NPOneCommand<GroupMessage<String>,GroupMessage<String>> {
     @Override
-    public Object execute(Chat chat) {
+    public GroupMessage<String> execute(GroupMessage<String> message) {
         return null;
     }
 
@@ -24,7 +23,7 @@ public class SessionKeyGenerationCommand implements NPOneCommand {
             throw new CryptoOperationException("Key`s confirmation don't equals!");
         }
 
-        EncryptionUtils.verifySign(message);
+        EncryptionUtils.verifyGroupSignature(message);
         String secretShare = decrypt(message);
 
         SecretSharesContainer.INSTANCE.addSecretShareForChatIdAndUserId(

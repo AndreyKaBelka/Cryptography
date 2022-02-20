@@ -2,6 +2,7 @@ package com.andreyka.crypto.models;
 
 import com.andreyka.crypto.eliptic.ECDSAService;
 import com.andreyka.crypto.hashes.SHA2;
+import com.andreyka.crypto.utils.EncryptionUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -15,7 +16,7 @@ public class SignedMessage {
 
     public static SignedMessage signMessage(final ExtendedMessage extendedMessage, final PrivateKey privateKey) {
         Hash hash = SHA2.getHash(extendedMessage.toString());
-        Signature signature = ECDSAService.getSignature(hash, privateKey);
+        Signature signature = EncryptionUtils.signature(hash, privateKey);
         return new SignedMessage(extendedMessage, signature);
     }
 }

@@ -2,12 +2,12 @@ package com.andreyka.crypto.database;
 
 import com.andreyka.crypto.models.keyexchange.CommonKey;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.commons.dbutils.ResultSetHandler;
 
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public enum CommonKeysSingleton {
@@ -47,7 +47,7 @@ public enum CommonKeysSingleton {
                     return null;
                 }
 
-                Map<String, Object> result = new LinkedMap<>();
+                Map<String, Object> result = new LinkedHashMap<>();
                 Field[] fields = CommonKey.class.getDeclaredFields();
 
                 for (Field field : fields) {

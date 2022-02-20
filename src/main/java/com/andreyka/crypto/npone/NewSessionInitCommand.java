@@ -14,7 +14,7 @@ import com.andreyka.crypto.utils.NPOneUtils;
 import java.math.BigInteger;
 import java.util.Map;
 
-public class NewSessionInitCommand implements NPOneCommand<Map<Long, GroupMessage<String>>> {
+public class NewSessionInitCommand implements NPOneCommand<Map<Long, GroupMessage<String>>, Chat> {
     @Override
     public Map<Long, GroupMessage<String>> execute(final Chat chat) {
         return newSessionGenerate(chat);
@@ -24,11 +24,11 @@ public class NewSessionInitCommand implements NPOneCommand<Map<Long, GroupMessag
         Hash sessionId = NPOneUtils.generateSessionId(chat);
         SessionIdsContainer.INSTANCE.addSessionIdForChat(chat.getChatId(), sessionId);
 
-        long myUserId = MineInfoContainer.INSTANCE.getUserId();
+        long myUserId = MineInfoContainer.INSTANCE.getUserId(chat.getChatId());
 
         generateSecretShares(chat, sessionId, myUserId);
         Map<Long, GroupMessage<String>> groupMessages = encryptSecretShare(chat, myUserId);
-        EncryptionUtils.groupSignature(groupMessages);
+        EncryptionUtils.groupSignature(chat.getChatId(), groupMessages);
         NPOneUtils.addKeyConfirmations(groupMessages);
 
         return groupMessages;

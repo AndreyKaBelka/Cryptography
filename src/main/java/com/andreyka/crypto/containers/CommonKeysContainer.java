@@ -1,9 +1,9 @@
 package com.andreyka.crypto.containers;
 
-import org.apache.commons.collections4.map.LinkedMap;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public enum CommonKeysContainer {
@@ -20,7 +20,7 @@ public enum CommonKeysContainer {
     }
 
     public Map<Long, BigInteger> getCommonKeysForUsers(final long... userIds) {
-        Map<Long, BigInteger> res = new LinkedMap<>();
+        Map<Long, BigInteger> res = new LinkedHashMap<>();
         for (long userId : userIds) {
             res.put(userId, container.get(userId));
         }

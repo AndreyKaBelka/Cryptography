@@ -5,6 +5,6 @@ import com.andreyka.crypto.models.keyexchange.GroupMessage;
 
 import java.util.Map;
 
-public interface NPOneCommand<T> {
-    T execute(Chat chat);
+public interface NPOneCommand<T, V> {
+    T execute(V val);
 }
