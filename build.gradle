@@ -51,5 +51,6 @@ sonarqube {
         property "sonar.projectKey", "AndreyKaBelka_Cryptography"
         property "sonar.organization", "andreykabelka"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.coverage.jacoco.xmlReportPaths", "./build/test-results/test/*.xml"
     }
 }
