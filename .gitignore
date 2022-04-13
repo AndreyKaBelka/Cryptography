@@ -2,3 +2,6 @@
 /.idea/
 /target/
 /out/
+/crypto.iml
+/.gradle/
+/build/

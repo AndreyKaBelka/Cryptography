@@ -1,9 +1,7 @@
-package com.andreyka.crypto.api;
+package com.andreyka.crypto.models;
 
 import com.google.common.base.Stopwatch;
 import lombok.AllArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -21,7 +19,7 @@ public class TimingExtension implements BeforeTestExecutionCallback, AfterTestEx
     private final Map<String, Pair> timeOfTests = new HashMap<>();
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context) {
         stopwatch.stop();
 
         String testName = context.getRequiredTestMethod().getName();
@@ -39,7 +37,7 @@ public class TimingExtension implements BeforeTestExecutionCallback, AfterTestEx
     }
 
     @Override
-    public void beforeTestExecution(ExtensionContext context) throws Exception {
+    public void beforeTestExecution(ExtensionContext context) {
         stopwatch.start();
     }
 

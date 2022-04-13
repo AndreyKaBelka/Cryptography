@@ -1,6 +1,7 @@
 package com.andreyka.crypto.hashes;
 
-import com.andreyka.crypto.api.Hash;
+import com.andreyka.crypto.models.Hash;
+import com.andreyka.crypto.utils.ByteUtils;
 
 import java.nio.ByteBuffer;
 
@@ -25,6 +26,10 @@ public class SHA2 {
         0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
     };
 
+    public static Hash getHash(long value) {
+        return new Hash(getHash(ByteUtils.longToBytes(value)));
+    }
+
     public static Hash getHash(String string) {
         return new Hash(getHash(string.getBytes()));
     }
@@ -40,42 +45,18 @@ public class SHA2 {
         int h7 = SHA2.h7;
 
         //Create array of bytes
-        int length = (bytes.length + 1) << 3;
-        int zerosCount = 448 - (length % 512);
-        if (zerosCount < 0) {
-            zerosCount += 512;
-        }
-        length = (length + zerosCount + 64) >> 3;
+        int length = getLength(bytes);
         byte[] bytes1 = new byte[length];
 
         //Pre-processing
-        System.arraycopy(bytes, 0, bytes1, 0, bytes.length);
-        bytes1[bytes.length] = (byte) 0b10000000;
-
-        int cnt = 1;
-        for (int i = (bytes1.length - 8); i < bytes1.length; i++) {
-            byte b = getFirst8BitsWithOffset(((long) bytes.length << 3), (cnt++ * 8));
-            bytes1[i] = b;
-        }
+        preprocessing(bytes, bytes1);
 
         int numBlocks = length >>> 6;
         for (int blockNum = 0; blockNum < numBlocks; blockNum++) {
-            byte[] block = new byte[64];
-            System.arraycopy(bytes1, 64 * blockNum, block, 0, 64);
+            byte[] block = getBytes(64, bytes1, blockNum);
 
             //get words
-            int[] words = new int[64];
-            for (int i = 0; i < 16; i++) {
-                byte[] wordBytes = new byte[4];
-                System.arraycopy(block, 4 * i, wordBytes, 0, 4);
-                words[i] = ByteBuffer.wrap(wordBytes).getInt();
-            }
-
-            for (int i = 16; i < 64; i++) {
-                int s0 = rightRotate(words[i - 15], 7) ^ rightRotate(words[i - 15], 18) ^ (words[i - 15] >>> 3);
-                int s1 = rightRotate(words[i - 2], 17) ^ rightRotate(words[i - 2], 19) ^ (words[i - 2] >>> 10);
-                words[i] = words[i - 16] + s0 + words[i - 7] + s1;
-            }
+            int[] words = getWords(block);
 
             int a = h0;
             int b = h1;
@@ -87,12 +68,8 @@ public class SHA2 {
             int h = h7;
 
             for (int i = 0; i < words.length; ++i) {
-                int s1 = rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25);
-                int ch = (e & f) ^ (~e & g);
-                int temp1 = h + s1 + ch + K[i] + words[i];
-                int s0 = rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22);
-                int maj = (a & b) ^ (a & c) ^ (b & c);
-                int temp2 = s0 + maj;
+                int temp1 = getTemp1(words, e, f, g, h, i);
+                int temp2 = getTemp2(a, b, c);
 
                 h = g;
                 g = f;
@@ -115,14 +92,61 @@ public class SHA2 {
         }
 
 
-        return toHex(h0) +
-            toHex(h1) +
-            toHex(h2) +
-            toHex(h3) +
-            toHex(h4) +
-            toHex(h5) +
-            toHex(h6) +
-            toHex(h7);
+        return "%s%s%s%s%s%s%s%s".formatted(toHex(h0), toHex(h1), toHex(h2), toHex(h3), toHex(h4), toHex(h5), toHex(h6), toHex(h7));
+    }
+
+    private static int getLength(byte[] bytes) {
+        int length = (bytes.length + 1) << 3;
+        int zerosCount = 448 - (length % 512);
+        if (zerosCount < 0) {
+            zerosCount += 512;
+        }
+        length = (length + zerosCount + 64) >> 3;
+        return length;
+    }
+
+    private static int getTemp2(int a, int b, int c) {
+        int s0 = rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22);
+        int maj = (a & b) ^ (a & c) ^ (b & c);
+        return s0 + maj;
+    }
+
+    private static int getTemp1(int[] words, int e, int f, int g, int h, int i) {
+        int s1 = rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25);
+        int ch = (e & f) ^ (~e & g);
+        return h + s1 + ch + K[i] + words[i];
+    }
+
+    private static int[] getWords(byte[] block) {
+        int[] words = new int[64];
+        for (int i = 0; i < 16; i++) {
+            byte[] wordBytes = getBytes(4, block, i);
+            words[i] = ByteBuffer.wrap(wordBytes).getInt();
+        }
+
+        for (int i = 16; i < 64; i++) {
+            int s0 = rightRotate(words[i - 15], 7) ^ rightRotate(words[i - 15], 18) ^ (words[i - 15] >>> 3);
+            int s1 = rightRotate(words[i - 2], 17) ^ rightRotate(words[i - 2], 19) ^ (words[i - 2] >>> 10);
+            words[i] = words[i - 16] + s0 + words[i - 7] + s1;
+        }
+        return words;
+    }
+
+    private static byte[] getBytes(int x, byte[] bytes1, int blockNum) {
+        byte[] block = new byte[x];
+        System.arraycopy(bytes1, x * blockNum, block, 0, x);
+        return block;
+    }
+
+    private static void preprocessing(byte[] bytes, byte[] bytes1) {
+        System.arraycopy(bytes, 0, bytes1, 0, bytes.length);
+        bytes1[bytes.length] = (byte) 0b10000000;
+
+        int cnt = 1;
+        for (int i = (bytes1.length - 8); i < bytes1.length; i++) {
+            byte b = getFirst8BitsWithOffset(((long) bytes.length << 3), (cnt++ * 8));
+            bytes1[i] = b;
+        }
     }
 
     private static byte getFirst8BitsWithOffset(long val, int offset) {

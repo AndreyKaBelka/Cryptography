@@ -1,4 +1,4 @@
-package com.andreyka.crypto.api;
+package com.andreyka.crypto.models;
 
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;

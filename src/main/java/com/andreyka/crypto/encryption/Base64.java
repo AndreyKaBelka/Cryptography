@@ -1,7 +1,11 @@
 package com.andreyka.crypto.encryption;
 
+import lombok.experimental.UtilityClass;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+@UtilityClass
 public class Base64 {
     private static final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -9,7 +13,7 @@ public class Base64 {
         if (text.isBlank()) {
             return "";
         }
-        return encode(text.getBytes());
+        return encode(text.getBytes(StandardCharsets.UTF_8));
     }
 
     public static String encode(byte[] bytes) {
