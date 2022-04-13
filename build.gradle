@@ -24,7 +24,6 @@ dependencies {
 
     implementation 'org.projectlombok:lombok:1.18.22'
     implementation 'org.slf4j:slf4j-simple:1.7.36'
-    implementation 'commons-dbutils:commons-dbutils:1.7'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
 
     testImplementation 'com.google.guava:guava:31.0.1-jre'
@@ -38,6 +37,11 @@ tasks.withType(JavaCompile) {
 
 test {
     useJUnitPlatform()
+
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpDir = file("$buildDir/jacoco/classpathdumps")
+    }
 }
 
 jacocoTestReport {
@@ -45,6 +49,14 @@ jacocoTestReport {
         xml {
             enabled true
         }
+        html {
+            enabled false
+        }
+        csv {
+            enabled false
+        }
+
+        getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/jacocoTest.exec"))
     }
 }
 
@@ -53,6 +65,5 @@ sonarqube {
         property "sonar.projectKey", "AndreyKaBelka_Cryptography"
         property "sonar.organization", "andreykabelka"
         property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.coverage.jacoco.xmlReportPaths", "./build/reports/jacoco/test/*.xml"
     }
 }
