@@ -2,32 +2,29 @@ package com.andreyka.crypto.npone;
 
 import com.andreyka.crypto.containers.ChatsContainer;
 import com.andreyka.crypto.containers.MineInfoContainer;
-import com.andreyka.crypto.models.Chat;
+import com.andreyka.crypto.models.User;
+import com.andreyka.crypto.models.UserInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AuthenticationStepForNewTest {
-    private Chat chat;
+    private UserInfo userInfo;
 
     @BeforeEach
     void setUp() {
         long chatId = ChatsContainer.INSTANCE.initChat();
-        chat = ChatsContainer.INSTANCE.getById(chatId).get();
+        MineInfoContainer.UserInfo user = MineInfoContainer.INSTANCE.getUserInfo(chatId);
+        userInfo = new UserInfo(user.userId(), user.keyPair().getPublicKey(), chatId);
     }
 
     @Test
     void addNewUser() {
-        new AuthenticationStepForNew().execute(chat);
+        new AuthenticationStepForNew().execute(userInfo);
 
-        Assertions.assertEquals(
-            MineInfoContainer.INSTANCE.getUserId(chat.getChatId()),
-            chat.getParticipantsList().get(0).getUserId()
-        );
+        final User user = ChatsContainer.INSTANCE.getUserById(userInfo.getChatId(), userInfo.getUserId());
 
-        Assertions.assertEquals(
-            MineInfoContainer.INSTANCE.getPublicKey(chat.getChatId()),
-            chat.getParticipantsList().get(0).getKey()
-        );
+        Assertions.assertEquals(user.getUserId(), userInfo.getUserId());
+        Assertions.assertEquals(user.getKey(), userInfo.getKey());
     }
 }

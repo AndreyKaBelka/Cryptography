@@ -45,11 +45,6 @@ public class NPOneUtils {
         return chat.getParticipantsList().stream().filter((user) -> user.getUserId() != myId).toArray(User[]::new);
     }
 
-    public User getNewUser(Chat chat) {
-        int lastIndex = chat.getParticipantsList().size();
-        return chat.getParticipantsList().get(lastIndex);
-    }
-
     public Hash getKeyConfirmationHash(final BigInteger commonKey, final long userId) {
         return KeyConfirmation.create(commonKey, userId).hash();
     }

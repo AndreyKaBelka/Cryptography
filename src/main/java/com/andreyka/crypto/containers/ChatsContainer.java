@@ -5,6 +5,7 @@ import com.andreyka.crypto.models.Chat;
 import com.andreyka.crypto.models.User;
 import com.andreyka.crypto.utils.RandomUtils;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,15 @@ public enum ChatsContainer {
 
     public long initChat() {
         long chatId = RandomUtils.generateLong();
+        Chat chat = new Chat(chatId, new ArrayList<>());
+        container.add(chat);
+        return chatId;
+    }
+
+    public long initChat(long chatId) {
+        if (getById(chatId).isEmpty()) {
+            throw new KeyAlreadyExistsException("Chat with id %d already exists".formatted(chatId));
+        }
         Chat chat = new Chat(chatId, new ArrayList<>());
         container.add(chat);
         return chatId;

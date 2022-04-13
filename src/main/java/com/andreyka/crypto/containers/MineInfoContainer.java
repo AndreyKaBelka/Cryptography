@@ -25,11 +25,11 @@ public enum MineInfoContainer {
         return getUserInfo(chatId).userId();
     }
 
-    private UserInfo getUserInfo(long chatId) {
+    public UserInfo getUserInfo(long chatId) {
         return container.computeIfAbsent(chatId, (chatId1) -> new UserInfo());
     }
 
-    record UserInfo(long userId, KeyPair keyPair) {
+    public record UserInfo(long userId, KeyPair keyPair) {
         public UserInfo() {
             this(RandomUtils.generateLong(), new KeyPair());
         }
