@@ -1,5 +1,7 @@
 package com.andreyka.crypto.constants;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
@@ -9,6 +11,7 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
+@Slf4j
 public class Inputs {
 
     static {
@@ -25,7 +28,7 @@ public class Inputs {
             System.setProperty("B_CONST", ecParameters.getCurve().getB().toString());
             System.setProperty("N_CONST", ecParameters.getOrder().toString());
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidParameterSpecException e) {
-            e.printStackTrace();
+            log.error(e.getLocalizedMessage());
         }
     }
 
