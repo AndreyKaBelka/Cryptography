@@ -10,7 +10,7 @@ public class PublicKey {
 
     public BigInteger getCommonKey(PrivateKey privateKey) {
         BigInteger number = privateKey.getNumberPrivateKey();
-        ECPoint invoke = pointPublicKey.multiply(number);
+        ECPoint invoke = ECPoint.multiply(pointPublicKey, number);
         return invoke.getX();
     }
 }
