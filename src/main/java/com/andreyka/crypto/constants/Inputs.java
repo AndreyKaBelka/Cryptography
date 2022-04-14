@@ -1,22 +1,44 @@
 package com.andreyka.crypto.constants;
 
 import java.math.BigInteger;
+import java.security.AlgorithmParameters;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.ECFieldFp;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.ECParameterSpec;
+import java.security.spec.InvalidParameterSpecException;
 
-public enum Inputs {
-    GX("188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012", 16),
-    GY("07192b95ffc8da78631011ed6b24cdd573f977a11e794811", 16),
-    P("6277101735386680763835789423207666416083908700390324961279"),
-    A(String.valueOf(-3)),
-    B("64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1", 16),
-    N("6277101735386680763835789423176059013767194773182842284081");
+public class Inputs {
+
+    static {
+        try {
+            AlgorithmParameters params = AlgorithmParameters.getInstance("EC", "SunEC");
+            params.init(new ECGenParameterSpec("NIST P-256"));
+
+            ECParameterSpec ecParameters = params.getParameterSpec(ECParameterSpec.class);
+
+            System.setProperty("A_CONST", ecParameters.getCurve().getA().toString());
+            System.setProperty("GX_CONST", ecParameters.getGenerator().getAffineX().toString());
+            System.setProperty("GY_CONST", ecParameters.getGenerator().getAffineY().toString());
+            System.setProperty("P_CONST", ((ECFieldFp) ecParameters.getCurve().getField()).getP().toString());
+            System.setProperty("B_CONST", ecParameters.getCurve().getB().toString());
+            System.setProperty("N_CONST", ecParameters.getOrder().toString());
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidParameterSpecException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static final Inputs A = new Inputs(System.getProperty("A_CONST"));
+    public static final Inputs GX = new Inputs(System.getProperty("GX_CONST"));
+    public static final Inputs GY = new Inputs(System.getProperty("GY_CONST"));
+    public static final Inputs P = new Inputs(System.getProperty("P_CONST"));
+    public static final Inputs B = new Inputs(System.getProperty("B_CONST"));
+    public static final Inputs N = new Inputs(System.getProperty("N_CONST"));
 
     public final BigInteger value;
 
-    Inputs(String str) {
+    private Inputs(String str) {
         this.value = new BigInteger(str);
-    }
-
-    Inputs(String str, int rad) {
-        this.value = new BigInteger(str, rad);
     }
 }

@@ -15,14 +15,13 @@ public class KeyPair {
 
     public KeyPair() {
         this.privateKey = genPrivateKey();
-        this.publicKey = genPublicKey(this.privateKey);
+        this.publicKey = genPublicKey();
     }
 
-    private PublicKey genPublicKey(PrivateKey privateKey) {
-        Inputs[] inputs = Inputs.values();
-        ECPoint g = new ECPoint(inputs);
-        BigInteger d = privateKey.getNumberPrivateKey();
-        ECPoint pointPubKey = g.multiply(d);
+    private PublicKey genPublicKey() {
+        ECPoint g = new ECPoint();
+        BigInteger d = this.privateKey.getNumberPrivateKey();
+        ECPoint pointPubKey = ECPoint.multiply(g, d);
         return PublicKey.create(pointPubKey);
     }
 
