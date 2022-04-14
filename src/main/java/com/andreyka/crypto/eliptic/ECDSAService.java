@@ -3,7 +3,13 @@ package com.andreyka.crypto.eliptic;
 import com.andreyka.crypto.constants.Inputs;
 import com.andreyka.crypto.models.*;
 
+import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.security.Provider;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
 
 public class ECDSAService {
 
@@ -38,8 +44,8 @@ public class ECDSAService {
         BigInteger u1 = invS.multiply(hash.getNumber()).mod(Inputs.N.value);
         BigInteger u2 = invS.multiply(sigma.getX()).mod(Inputs.N.value);
 
-        ECPoint firstSummary = new ECPoint(Inputs.values()).multiply(u1);
-        ECPoint secondSummary = publicKey.getPointPublicKey().multiply(u2);
+        ECPoint firstSummary = ECPoint.multiply(new ECPoint(), u1);
+        ECPoint secondSummary = ECPoint.multiply(publicKey.getPointPublicKey(), u2);
 
         ECPoint pointP = ECPoint.add(firstSummary, secondSummary);
 

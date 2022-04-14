@@ -2,6 +2,7 @@ package com.andreyka.crypto.models;
 
 import com.andreyka.crypto.constants.Inputs;
 import com.andreyka.crypto.exceptions.ECPointParseException;
+import com.andreyka.crypto.hashes.SHA2;
 import lombok.Value;
 
 import java.io.Serializable;
@@ -26,19 +27,19 @@ public class ECPoint implements Serializable {
     }
 
     public ECPoint(BigInteger r, BigInteger s) {
-        x = r;
-        y = s;
+        this.x = r;
+        this.y = s;
         this.a = Inputs.A.value;
         this.b = Inputs.B.value;
         this.p = Inputs.P.value;
     }
 
-    public ECPoint(Inputs[] inputs) {
-        this.x = inputs[0].value;
-        this.y = inputs[1].value;
-        this.p = inputs[2].value;
-        this.a = inputs[3].value;
-        this.b = inputs[4].value;
+    public ECPoint() {
+        this.x = Inputs.GX.value;
+        this.y = Inputs.GY.value;
+        this.p = Inputs.P.value;
+        this.a = Inputs.A.value;
+        this.b = Inputs.B.value;
     }
 
     public ECPoint(BigInteger x, BigInteger y, ECPoint ecPoint) {
@@ -122,26 +123,42 @@ public class ECPoint implements Serializable {
      * @param num the multiplier number
      * @return scalar multiply of point and number
      */
-    public ECPoint multiply(BigInteger num) {
-        ECPoint ecPoint = this;
-        ECPoint temp = new ECPoint(this);
-        BigInteger cnt = num.subtract(BigInteger.ONE);
-        while (cnt.compareTo(BigInteger.ZERO) > 0) {
-            if (cnt.mod(BigInteger.TWO).compareTo(BigInteger.ZERO) != 0) {
-                if (ecPoint.getX().compareTo(temp.getX()) == 0 && ecPoint.getY().compareTo(temp.getY()) == 0) {
+    public static ECPoint multiply(ECPoint point,BigInteger num) {
+        ECPoint ecPoint = point;
+        ECPoint temp = point;
+        num = num.subtract(BigInteger.ONE);
+        while (num.compareTo(BigInteger.ZERO) > 0) {
+            if (!num.mod(BigInteger.TWO).equals(BigInteger.ZERO)) {
+                if (ecPoint.equals(temp)) {
                     ecPoint = doubleIt(ecPoint);
                 } else {
                     ecPoint = add(ecPoint, temp);
                 }
-                cnt = cnt.subtract(BigInteger.ONE);
-                if (cnt.compareTo(BigInteger.ZERO) == 0) {
+                num = num.subtract(BigInteger.ONE);
+                if (num.equals(BigInteger.ZERO)) {
                     break;
                 }
             }
             temp = doubleIt(temp);
-            cnt = cnt.divide(BigInteger.TWO);
+            num = num.divide(BigInteger.TWO);
         }
         return ecPoint;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ECPoint ecPoint = (ECPoint) o;
+
+        if (!x.equals(ecPoint.x)) return false;
+        return y.equals(ecPoint.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return SHA2.getHash(this.toString()).getNumber().intValue();
     }
 
     @Override
