@@ -10,6 +10,6 @@ public class User {
     private final PublicKey key;
 
     public long bitSum() {
-        return key.getPointPublicKey().getX().or(BigInteger.valueOf(userId)).longValueExact();
+        return key.getPointPublicKey().getX().or(BigInteger.valueOf(userId)).longValue();
     }
 }

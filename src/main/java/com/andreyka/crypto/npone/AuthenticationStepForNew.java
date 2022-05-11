@@ -10,18 +10,12 @@ public class AuthenticationStepForNew implements NPOneCommand<Class<Void>, UserI
 
     @Override
     public Class<Void> execute(final UserInfo user) {
+        ChatsContainer.INSTANCE.addUser(user.getChatId(), user);
         sharesGenerate(user);
         return Void.TYPE;
     }
 
     public void sharesGenerate(final UserInfo user) {
         NPOneUtils.generateKeyAndKeyConfirmation(user.getChatId(), user);
-
-        ChatsContainer.INSTANCE.addUser(user.getChatId(), getMyUser(user.getChatId()));
-    }
-
-    private User getMyUser(final long chatId) {
-        MineInfoContainer.UserInfo userInfo = MineInfoContainer.INSTANCE.getUserInfo(chatId);
-        return new User(userInfo.userId(), userInfo.keyPair().getPublicKey());
     }
 }

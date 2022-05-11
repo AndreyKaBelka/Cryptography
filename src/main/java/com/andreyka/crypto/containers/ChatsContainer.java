@@ -29,13 +29,12 @@ public enum ChatsContainer {
         return chatId;
     }
 
-    public long initChat(long chatId) {
-        if (getById(chatId).isEmpty()) {
+    public void initChat(long chatId) {
+        if (getById(chatId).isPresent()) {
             throw new KeyAlreadyExistsException("Chat with id %d already exists".formatted(chatId));
         }
         Chat chat = new Chat(chatId, new ArrayList<>());
         container.add(chat);
-        return chatId;
     }
 
     public User getUserById(final long chatId, final long userId) {
