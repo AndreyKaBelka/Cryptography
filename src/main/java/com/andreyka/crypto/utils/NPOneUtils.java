@@ -1,8 +1,6 @@
 package com.andreyka.crypto.utils;
 
-import com.andreyka.crypto.containers.CommonKeysContainer;
-import com.andreyka.crypto.containers.KeyConfirmationContainer;
-import com.andreyka.crypto.containers.MineInfoContainer;
+import com.andreyka.crypto.containers.*;
 import com.andreyka.crypto.hashes.SHA2;
 import com.andreyka.crypto.models.Chat;
 import com.andreyka.crypto.models.Hash;
@@ -15,6 +13,7 @@ import lombok.experimental.UtilityClass;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @UtilityClass
@@ -61,5 +60,17 @@ public class NPOneUtils {
 
     public Hash generateSecretShare(final BigInteger commonKey, final Hash sessionId) {
         return SecretShare.create(commonKey, sessionId).generate();
+    }
+
+    public Hash generateSessionKey(final long chatId) {
+        Hash res = new Hash();
+        List<Hash> secretShares = SecretSharesContainer.INSTANCE.getSecretShares(chatId);
+        Hash sessionId = SessionIdsContainer.INSTANCE.getSessionIdByChatId(chatId);
+        for (Hash hash : secretShares) {
+            res.xor(hash);
+        }
+        res.xor(sessionId);
+        SessionKeysContainer.INSTANCE.addSessionKey(chatId, res);
+        return res;
     }
 }

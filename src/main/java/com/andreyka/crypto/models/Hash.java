@@ -23,6 +23,10 @@ public class Hash {
         return new Hash(xorRes.toString(16));
     }
 
+    public Hash xor(long number) {
+        return new Hash(Long.toString(number, 16)).xor(this);
+    }
+
     @Override
     public String toString() {
         return stringHash;
